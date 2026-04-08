@@ -68,7 +68,39 @@
           <code>painting-01.jpg</code> to <code>painting-25.jpg</code>.
         </p>
       </div>
-      <div class="gallery-grid" id="gallery-grid" aria-live="polite"></div>
+      <div class="shop-toolbar">
+        <button class="fav-filter" id="fav-filter-btn" type="button">
+          Show Favourites Only: Off
+        </button>
+        <div class="quick-stats">
+          <span>Price: INR 25,000 per painting</span>
+          <span>All India delivery chargeable: INR 1,200 per order</span>
+        </div>
+      </div>
+      <div class="gallery-layout">
+        <div class="gallery-grid" id="gallery-grid" aria-live="polite"></div>
+        <aside class="cart-panel" aria-labelledby="cart-title">
+          <p class="section-label">Cart</p>
+          <h3 id="cart-title">Ved Art Cart</h3>
+          <p class="cart-note">Selected works: <strong id="cart-count">0</strong></p>
+          <ul class="cart-list" id="cart-items"></ul>
+          <p class="cart-empty" id="cart-empty">No paintings in cart yet.</p>
+          <div class="cart-total-row">
+            <span>Subtotal</span>
+            <strong id="cart-subtotal">INR 0</strong>
+          </div>
+          <div class="cart-total-row">
+            <span>Delivery (All India)</span>
+            <strong id="cart-delivery">INR 0</strong>
+          </div>
+          <div class="cart-total-row grand">
+            <span>Total</span>
+            <strong id="cart-total">INR 0</strong>
+          </div>
+          <button class="checkout-btn" type="button" id="checkout-btn">Proceed to Enquiry</button>
+          <p class="cart-help">Favourites: <strong id="fav-count">0</strong> saved paintings</p>
+        </aside>
+      </div>
     </section>
   </main>
 
