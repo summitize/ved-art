@@ -11,6 +11,11 @@ const SOCIAL_CONFIG = {
     projectId: "",
     appId: ""
   },
+  providers: {
+    google: true,
+    apple: false,
+    facebook: false
+  },
   ...(window.VED_SOCIAL_CONFIG || {})
 };
 
@@ -70,6 +75,7 @@ const elements = {
   body: document.body,
   year: document.getElementById("year"),
   authMessage: document.getElementById("auth-message"),
+  authStatus: document.getElementById("auth-status"),
   viewerName: document.getElementById("viewer-name"),
   viewerMeta: document.getElementById("viewer-meta"),
   signoutBtn: document.getElementById("signout-btn"),
@@ -105,6 +111,7 @@ const state = {
 
 const loadedScripts = new Map();
 let firebaseAuth = null;
+let authButtonsLocked = false;
 
 const parseJson = (value, fallback) => {
   try {
@@ -127,10 +134,36 @@ const setAuthMessage = (text) => {
   elements.authMessage.textContent = text;
 };
 
+const setAuthStatus = (status, text) => {
+  elements.authStatus.dataset.state = status;
+  elements.authStatus.textContent = text;
+};
+
+const isProviderEnabled = (providerName) =>
+  Boolean((SOCIAL_CONFIG.providers || {})[providerName]);
+
+const updateProviderButtonState = () => {
+  const providerButtons = [
+    { key: "google", element: elements.googleLogin, label: "Google" },
+    { key: "apple", element: elements.appleLogin, label: "Apple" },
+    { key: "facebook", element: elements.facebookLogin, label: "Facebook" }
+  ];
+
+  for (const item of providerButtons) {
+    const enabledInConfig = isProviderEnabled(item.key);
+    const enabledNow = !authButtonsLocked && state.authEnabled && enabledInConfig;
+
+    item.element.disabled = !enabledNow;
+    item.element.dataset.comingSoon = enabledInConfig ? "false" : "true";
+    item.element.title = enabledInConfig
+      ? `Continue with ${item.label}`
+      : `${item.label} integration coming soon`;
+  }
+};
+
 const setAuthButtonsDisabled = (isDisabled) => {
-  elements.googleLogin.disabled = isDisabled;
-  elements.appleLogin.disabled = isDisabled;
-  elements.facebookLogin.disabled = isDisabled;
+  authButtonsLocked = isDisabled;
+  updateProviderButtonState();
 };
 
 const loadScriptOnce = (id, src) => {
@@ -455,13 +488,15 @@ const finalizeAuthUser = (firebaseUser) => {
   state.currentUser = userFromFirebase(firebaseUser);
   loadProfileForCurrentUser();
   setAuthMessage(`Signed in as ${state.currentUser.name}. Personalized Ved collection is active.`);
+  setAuthStatus("signed-in", "Auth Status: Signed In");
   renderAll();
 };
 
-const setGuestMode = (message) => {
+const setGuestMode = (message, status = "ready") => {
   state.currentUser = { ...GUEST_USER };
   loadProfileForCurrentUser();
   setAuthMessage(message);
+  setAuthStatus(status, status === "ready" ? "Auth Status: Ready" : "Auth Status: Not Ready");
   renderAll();
 };
 
@@ -472,7 +507,11 @@ const initFirebaseAuth = async () => {
     state.authReady = true;
     state.authEnabled = false;
     setAuthButtonsDisabled(false);
-    setGuestMode("Auth is not configured. Add Firebase keys in auth-config.js and enable Google/Facebook/Apple providers.");
+    setGuestMode(
+      "Auth is not configured. Add Firebase keys in auth-config.js and enable Google/Facebook/Apple providers.",
+      "config-missing"
+    );
+    setAuthStatus("config-missing", "Auth Status: Config Missing");
     return;
   }
 
@@ -497,7 +536,8 @@ const initFirebaseAuth = async () => {
       if (firebaseUser) {
         finalizeAuthUser(firebaseUser);
       } else {
-        setGuestMode("You are in guest mode. Sign in to save favourites and purchases to your account.");
+        setGuestMode("You are in guest mode. Sign in to save favourites and purchases to your account.", "ready");
+        setAuthStatus("ready", "Auth Status: Ready");
       }
     });
   } catch (error) {
@@ -505,13 +545,22 @@ const initFirebaseAuth = async () => {
     state.authReady = true;
     state.authEnabled = false;
     setAuthButtonsDisabled(false);
-    setGuestMode("Auth could not be initialized. Check Firebase config and authorized domains.");
+    setGuestMode("Auth could not be initialized. Check Firebase config and authorized domains.", "error");
+    setAuthStatus("error", "Auth Status: Init Failed");
   }
 };
 
 const signInWithProvider = async (providerName) => {
+  if (!isProviderEnabled(providerName)) {
+    const providerLabel = PROVIDER_LABELS[providerName] || "This";
+    setAuthMessage(`${providerLabel} integration will be enabled soon.`);
+    setAuthStatus("ready", "Auth Status: Ready");
+    return;
+  }
+
   if (!state.authEnabled || !firebaseAuth) {
     setAuthMessage("Sign-up is not ready yet. Configure Firebase in auth-config.js first.");
+    setAuthStatus("config-missing", "Auth Status: Config Missing");
     return;
   }
 
@@ -536,10 +585,12 @@ const signInWithProvider = async (providerName) => {
 
   if (!provider) {
     setAuthMessage("Unsupported provider.");
+    setAuthStatus("error", "Auth Status: Unsupported Provider");
     return;
   }
 
   try {
+    setAuthStatus("signing-in", `Auth Status: Signing In (${providerName})`);
     await firebaseAuth.signInWithPopup(provider);
   } catch (error) {
     const code = error && error.code ? error.code : "";
@@ -555,6 +606,7 @@ const signInWithProvider = async (providerName) => {
 
     console.error(error);
     setAuthMessage(`Sign-in failed (${code || "unknown"}). Verify provider setup and authorized domains.`);
+    setAuthStatus("error", `Auth Status: Sign-in Failed (${code || "unknown"})`);
   }
 };
 
@@ -667,7 +719,8 @@ elements.signoutBtn.addEventListener("click", async () => {
     return;
   }
 
-  setGuestMode("Signed out. You are in guest mode.");
+  setGuestMode("Signed out. You are in guest mode.", "ready");
+  setAuthStatus("ready", "Auth Status: Ready");
 });
 
 elements.googleLogin.addEventListener("click", () => signInWithProvider("google"));
@@ -678,4 +731,5 @@ initTheme();
 setAuthButtonsDisabled(true);
 renderAll();
 setAuthMessage("Initializing authentication...");
+setAuthStatus("init", "Auth Status: Initializing");
 initFirebaseAuth();

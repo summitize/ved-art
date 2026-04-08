@@ -1,0 +1,43 @@
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">Ved vivid art logo</title>
+  <desc id="logoDesc">A colorful abstract mark with playful brush strokes and a white V for Ved.</desc>
+  <defs>
+    <linearGradient id="bgGrad" x1="22" y1="18" x2="214" y2="222" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF8F2A"/>
+      <stop offset="0.35" stop-color="#FF3E9E"/>
+      <stop offset="0.68" stop-color="#2AA7FF"/>
+      <stop offset="1" stop-color="#1AD18F"/>
+    </linearGradient>
+    <linearGradient id="swirlA" x1="43" y1="161" x2="192" y2="102" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFD14B"/>
+      <stop offset="1" stop-color="#FF5C7A"/>
+    </linearGradient>
+    <linearGradient id="swirlB" x1="44" y1="96" x2="202" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7FF7D4"/>
+      <stop offset="1" stop-color="#4E7DFF"/>
+    </linearGradient>
+    <radialGradient id="spark" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(173 63) rotate(90) scale(18)">
+      <stop offset="0" stop-color="#FFF4B8"/>
+      <stop offset="1" stop-color="#FFC53D"/>
+    </radialGradient>
+    <filter id="softGlow" x="26" y="26" width="188" height="188" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="4.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect x="12" y="12" width="216" height="216" rx="56" fill="url(#bgGrad)"/>
+  <rect x="22" y="22" width="196" height="196" rx="48" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.34)"/>
+
+  <g filter="url(#softGlow)">
+    <path d="M44 160C71 94 132 85 192 151" stroke="url(#swirlA)" stroke-width="28" stroke-linecap="round"/>
+    <path d="M46 96C110 172 149 42 201 112" stroke="url(#swirlB)" stroke-width="22" stroke-linecap="round"/>
+    <circle cx="173" cy="63" r="18" fill="url(#spark)"/>
+  </g>
+
+  <path d="M66 48L105 186H124L162 48H137L114 133L90 48H66Z" fill="white"/>
+  <circle cx="80" cy="188" r="10" fill="white" fill-opacity="0.9"/>
+</svg>

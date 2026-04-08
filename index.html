@@ -24,8 +24,11 @@
   <header class="masthead">
     <div class="topline">
       <a class="brand" href="#">
-        <span class="brand-main">Ved Sumeet Bub</span>
-        <span class="brand-sub">Living Canvas Room</span>
+        <img class="brand-logo" src="assets/ved-vivid-logo.svg" alt="Ved art brand logo" />
+        <span class="brand-text">
+          <span class="brand-main">Ved Sumeet Bub</span>
+          <span class="brand-sub">Living Canvas Room</span>
+        </span>
       </a>
       <div class="top-actions">
         <a class="top-link" href="ved.html">About Ved</a>
@@ -33,6 +36,42 @@
         <button class="signout-btn" id="signout-btn" type="button" hidden>Sign Out</button>
       </div>
     </div>
+
+    <section class="auth-top-strip" aria-labelledby="viewer-access-title">
+      <div class="auth-top-copy">
+        <p class="eyebrow" id="viewer-access-title">Viewer Access</p>
+        <p class="auth-message" id="auth-message">
+          Sign in to keep Ved favourites and bought paintings personalized.
+        </p>
+        <p class="auth-status" id="auth-status" data-state="init">
+          Auth Status: Initializing
+        </p>
+      </div>
+      <div class="auth-top-controls">
+        <div class="viewer-card" id="viewer-card">
+          <p class="viewer-label">Current Viewer</p>
+          <p class="viewer-name" id="viewer-name">Guest User</p>
+          <p class="viewer-meta" id="viewer-meta">Guest mode on this device</p>
+        </div>
+        <div class="auth-icons" role="group" aria-label="Sign in options">
+          <button class="icon-auth-btn google" id="google-login" type="button" aria-label="Continue with Google">
+            <span class="auth-glyph" aria-hidden="true">G</span>
+            <span class="sr-only">Continue with Google</span>
+          </button>
+          <button class="icon-auth-btn apple" id="apple-login" type="button" aria-label="Continue with Apple">
+            <span class="auth-glyph" aria-hidden="true">A</span>
+            <span class="sr-only">Continue with Apple</span>
+          </button>
+          <button class="icon-auth-btn facebook" id="facebook-login" type="button" aria-label="Continue with Facebook">
+            <span class="auth-glyph" aria-hidden="true">f</span>
+            <span class="sr-only">Continue with Facebook</span>
+          </button>
+        </div>
+      </div>
+      <p class="auth-hint">
+        Google login is active now. Apple and Facebook icons are visible for upcoming integration.
+      </p>
+    </section>
 
     <div class="hero-grid">
       <section class="hero-copy">
@@ -45,27 +84,6 @@
         </p>
         <p class="pricing-note">
           Fine print: All paintings are priced at INR 25,000 each. All India delivery is chargeable at INR 1,200 per order.
-        </p>
-      </section>
-
-      <section class="identity-studio" aria-labelledby="identity-title">
-        <p class="eyebrow">Viewer Access</p>
-        <h2 id="identity-title">Google / Apple / Facebook Profile Layer</h2>
-        <p class="auth-message" id="auth-message">
-          Sign in to keep Ved favourites and bought paintings personalized.
-        </p>
-        <div class="auth-buttons">
-          <button class="auth-btn google" id="google-login" type="button">Continue with Google</button>
-          <button class="auth-btn apple" id="apple-login" type="button">Continue with Apple</button>
-          <button class="auth-btn facebook" id="facebook-login" type="button">Continue with Facebook</button>
-        </div>
-        <div class="viewer-card" id="viewer-card">
-          <p class="viewer-label">Current Viewer</p>
-          <p class="viewer-name" id="viewer-name">Guest User</p>
-          <p class="viewer-meta" id="viewer-meta">Guest mode on this device</p>
-        </div>
-        <p class="auth-hint">
-          Configure Firebase Auth in <code>auth-config.js</code> and enable Google, Facebook, and Apple providers.
         </p>
       </section>
     </div>
