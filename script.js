@@ -34,42 +34,149 @@ const PROVIDER_LABELS = {
   unknown: "Social"
 };
 
+const mediumCycle = ["Acrylic on Canvas", "Oil on Canvas", "Watercolor", "Mixed Media"];
+
 const paintingSeed = [
-  { title: "Ved's Color Drift", mood: "Vibrant Flow", file: "arts/painting-01.jpg" },
-  { title: "Ved's River Echo", mood: "Calm Pulse", file: "arts/painting-02.jpg" },
-  { title: "Ved's Dawn Rhythm", mood: "Fresh Light", file: "arts/painting-03.jpg" },
-  { title: "Ved's Quiet Bloom", mood: "Soft Energy", file: "arts/painting-04.jpg" },
-  { title: "Ved's Golden Pause", mood: "Warm Glow", file: "arts/painting-05.jpg" },
-  { title: "Ved's Street Sonata", mood: "Urban Melody", file: "arts/painting-06.jpg" },
-  { title: "Ved's Monsoon Notes", mood: "Rain Memory", file: "arts/painting-07.jpg" },
-  { title: "Ved's Bold Horizon", mood: "Open Sky", file: "arts/painting-08.jpg" },
-  { title: "Ved's Sun Fragments", mood: "Radiant Layer", file: "arts/painting-09.jpg" },
-  { title: "Ved's Living Texture", mood: "Raw Detail", file: "arts/painting-10.jpg" },
-  { title: "Ved's City Mirage", mood: "Electric Calm", file: "arts/painting-11.jpg" },
-  { title: "Ved's Memory Garden", mood: "Floral Pulse", file: "arts/painting-12.jpg" },
-  { title: "Ved's Silent Lantern", mood: "Night Glow", file: "arts/painting-13.jpg" },
-  { title: "Ved's Ocean Breath", mood: "Tidal Drift", file: "arts/painting-14.jpg" },
-  { title: "Ved's Crimson Orbit", mood: "Fiery Motion", file: "arts/painting-15.jpg" },
-  { title: "Ved's Morning Terrace", mood: "Light Breeze", file: "arts/painting-16.jpg" },
-  { title: "Ved's Hidden Valley", mood: "Earth Tone", file: "arts/painting-17.jpg" },
-  { title: "Ved's Chroma Rain", mood: "Playful Burst", file: "arts/painting-18.jpg" },
-  { title: "Ved's Skyline Verse", mood: "Neon Air", file: "arts/painting-19.jpg" },
-  { title: "Ved's Sunset Geometry", mood: "Shape & Heat", file: "arts/painting-20.jpg" },
-  { title: "Ved's Indigo Silence", mood: "Deep Tone", file: "arts/painting-21.jpg" },
-  { title: "Ved's Morning Pulse", mood: "Bright Calm", file: "arts/painting-22.jpg" },
-  { title: "Ved's Earth Chorus", mood: "Organic Beat", file: "arts/painting-23.jpg" },
-  { title: "Ved's Soft Thunder", mood: "Charged Air", file: "arts/painting-24.jpg" },
-  { title: "Ved's Last Light", mood: "Evening Story", file: "arts/painting-25.jpg" }
+  {
+    title: "Ved's Color Drift",
+    mood: "Vibrant Flow",
+    description: "An energetic play of layered hues where Ved turns color into rhythm."
+  },
+  {
+    title: "Ved's River Echo",
+    mood: "Calm Pulse",
+    description: "Soft water-inspired movement capturing serenity and quiet motion."
+  },
+  {
+    title: "Ved's Dawn Rhythm",
+    mood: "Fresh Light",
+    description: "A luminous morning composition built with bright transitions and open space."
+  },
+  {
+    title: "Ved's Quiet Bloom",
+    mood: "Soft Energy",
+    description: "Petal-like forms and gentle textures celebrating calm confidence."
+  },
+  {
+    title: "Ved's Golden Pause",
+    mood: "Warm Glow",
+    description: "Warm tones and layered brushwork creating a meditative pause on canvas."
+  },
+  {
+    title: "Ved's Street Sonata",
+    mood: "Urban Melody",
+    description: "A city-inspired arrangement where geometry and color pulse together."
+  },
+  {
+    title: "Ved's Monsoon Notes",
+    mood: "Rain Memory",
+    description: "Rain-washed textures and tonal contrasts that feel like monsoon music."
+  },
+  {
+    title: "Ved's Bold Horizon",
+    mood: "Open Sky",
+    description: "Expansive horizon lines expressing curiosity and fearless imagination."
+  },
+  {
+    title: "Ved's Sun Fragments",
+    mood: "Radiant Layer",
+    description: "Broken sunlight effects assembled through expressive mark-making."
+  },
+  {
+    title: "Ved's Living Texture",
+    mood: "Raw Detail",
+    description: "A tactile study of texture where every stroke adds visual tension."
+  },
+  {
+    title: "Ved's City Mirage",
+    mood: "Electric Calm",
+    description: "Urban abstraction balancing movement with stillness."
+  },
+  {
+    title: "Ved's Memory Garden",
+    mood: "Floral Pulse",
+    description: "A vivid floral world shaped by playful, youthful color decisions."
+  },
+  {
+    title: "Ved's Silent Lantern",
+    mood: "Night Glow",
+    description: "A dark-light contrast piece that explores glow and mystery."
+  },
+  {
+    title: "Ved's Ocean Breath",
+    mood: "Tidal Drift",
+    description: "Wave-like transitions and layered blues that breathe across the canvas."
+  },
+  {
+    title: "Ved's Crimson Orbit",
+    mood: "Fiery Motion",
+    description: "A dynamic red-led composition full of momentum and dramatic contrast."
+  },
+  {
+    title: "Ved's Morning Terrace",
+    mood: "Light Breeze",
+    description: "Airy tonal shifts that suggest open mornings and gentle sunlight."
+  },
+  {
+    title: "Ved's Hidden Valley",
+    mood: "Earth Tone",
+    description: "Natural pigments and grounded structure inspired by landscape memory."
+  },
+  {
+    title: "Ved's Chroma Rain",
+    mood: "Playful Burst",
+    description: "Bold splash-like passages celebrating spontaneous color play."
+  },
+  {
+    title: "Ved's Skyline Verse",
+    mood: "Neon Air",
+    description: "A skyline-driven painting with electric accents and poetic spacing."
+  },
+  {
+    title: "Ved's Sunset Geometry",
+    mood: "Shape & Heat",
+    description: "Structured forms and warm gradients meeting at day's edge."
+  },
+  {
+    title: "Ved's Indigo Silence",
+    mood: "Deep Tone",
+    description: "A contemplative indigo study exploring depth and still emotion."
+  },
+  {
+    title: "Ved's Morning Pulse",
+    mood: "Bright Calm",
+    description: "Light-filled and optimistic, with balanced visual cadence."
+  },
+  {
+    title: "Ved's Earth Chorus",
+    mood: "Organic Beat",
+    description: "Layered earthy hues arranged like a visual chorus."
+  },
+  {
+    title: "Ved's Soft Thunder",
+    mood: "Charged Air",
+    description: "Subtle contrasts and textured passages suggesting distant thunder."
+  },
+  {
+    title: "Ved's Last Light",
+    mood: "Evening Story",
+    description: "A warm ending note where Ved captures the day's final glow."
+  }
 ];
 
 const paintings = paintingSeed.map((painting, index) => ({
   id: index + 1,
-  price: PAINTING_PRICE,
-  ...painting
+  title: painting.title,
+  mood: painting.mood,
+  description: painting.description,
+  medium: mediumCycle[index % mediumCycle.length],
+  year: index % 2 === 0 ? "2025" : "2024",
+  file: `arts/painting-${String(index + 1).padStart(2, "0")}.jpg`,
+  price: PAINTING_PRICE
 }));
 
 const validPaintingIds = new Set(paintings.map((painting) => painting.id));
-const tilePattern = ["wide", "", "narrow", "", "wide", "", "", "narrow"];
+const loadedScripts = new Map();
 
 const elements = {
   body: document.body,
@@ -83,8 +190,10 @@ const elements = {
   googleLogin: document.getElementById("google-login"),
   appleLogin: document.getElementById("apple-login"),
   facebookLogin: document.getElementById("facebook-login"),
+  mediumButtons: [...document.querySelectorAll("[data-medium]")],
   favFilterBtn: document.getElementById("fav-filter-btn"),
   boughtFilterBtn: document.getElementById("bought-filter-btn"),
+  featuredGrid: document.getElementById("featured-grid"),
   galleryGrid: document.getElementById("gallery-grid"),
   cartItems: document.getElementById("cart-items"),
   cartEmpty: document.getElementById("cart-empty"),
@@ -95,7 +204,18 @@ const elements = {
   favCount: document.getElementById("fav-count"),
   boughtCount: document.getElementById("bought-count"),
   boughtList: document.getElementById("bought-list"),
-  boughtEmpty: document.getElementById("bought-empty")
+  boughtEmpty: document.getElementById("bought-empty"),
+  modal: document.getElementById("painting-modal"),
+  modalClose: document.getElementById("modal-close"),
+  modalImage: document.getElementById("modal-image"),
+  modalImageFallback: document.getElementById("modal-image-fallback"),
+  modalNumber: document.getElementById("modal-number"),
+  modalTitle: document.getElementById("modal-title"),
+  modalMeta: document.getElementById("modal-meta"),
+  modalDescription: document.getElementById("modal-description"),
+  modalFavBtn: document.getElementById("modal-fav-btn"),
+  modalCartBtn: document.getElementById("modal-cart-btn"),
+  modalBuyBtn: document.getElementById("modal-buy-btn")
 };
 
 const state = {
@@ -103,13 +223,14 @@ const state = {
   favourites: new Set(),
   cart: new Map(),
   purchases: new Map(),
+  selectedMedium: "all",
   favOnly: false,
   boughtOnly: false,
+  activePaintingId: null,
   authReady: false,
   authEnabled: false
 };
 
-const loadedScripts = new Map();
 let firebaseAuth = null;
 let authButtonsLocked = false;
 
@@ -129,6 +250,8 @@ const formatCurrency = (amount) =>
   }).format(amount);
 
 const getPainting = (id) => paintings.find((painting) => painting.id === id);
+const isProviderEnabled = (providerName) => Boolean((SOCIAL_CONFIG.providers || {})[providerName]);
+const getStorageKeyForUser = (user) => `${STORAGE_PREFIX}.profile.${user.uid}`;
 
 const setAuthMessage = (text) => {
   elements.authMessage.textContent = text;
@@ -139,33 +262,6 @@ const setAuthStatus = (status, text) => {
   elements.authStatus.textContent = text;
 };
 
-const isProviderEnabled = (providerName) =>
-  Boolean((SOCIAL_CONFIG.providers || {})[providerName]);
-
-const updateProviderButtonState = () => {
-  const providerButtons = [
-    { key: "google", element: elements.googleLogin, label: "Google" },
-    { key: "apple", element: elements.appleLogin, label: "Apple" },
-    { key: "facebook", element: elements.facebookLogin, label: "Facebook" }
-  ];
-
-  for (const item of providerButtons) {
-    const enabledInConfig = isProviderEnabled(item.key);
-    const enabledNow = !authButtonsLocked && state.authEnabled && enabledInConfig;
-
-    item.element.disabled = !enabledNow;
-    item.element.dataset.comingSoon = enabledInConfig ? "false" : "true";
-    item.element.title = enabledInConfig
-      ? `Continue with ${item.label}`
-      : `${item.label} integration coming soon`;
-  }
-};
-
-const setAuthButtonsDisabled = (isDisabled) => {
-  authButtonsLocked = isDisabled;
-  updateProviderButtonState();
-};
-
 const loadScriptOnce = (id, src) => {
   if (loadedScripts.has(id)) {
     return loadedScripts.get(id);
@@ -173,7 +269,6 @@ const loadScriptOnce = (id, src) => {
 
   const promise = new Promise((resolve, reject) => {
     const existing = document.getElementById(id);
-
     if (existing) {
       resolve();
       return;
@@ -192,41 +287,8 @@ const loadScriptOnce = (id, src) => {
   return promise;
 };
 
-const isFirebaseConfigValid = (config) =>
-  Boolean(config && config.apiKey && config.authDomain && config.projectId && config.appId);
-
-const providerFromFirebaseId = (providerId) => {
-  if (providerId === "google.com") {
-    return "google";
-  }
-
-  if (providerId === "facebook.com") {
-    return "facebook";
-  }
-
-  if (providerId === "apple.com") {
-    return "apple";
-  }
-
-  return "unknown";
-};
-
-const userFromFirebase = (user) => {
-  const primaryProviderId = user.providerData?.[0]?.providerId || user.providerId || "unknown";
-
-  return {
-    uid: String(user.uid || `uid-${Date.now()}`),
-    provider: providerFromFirebaseId(primaryProviderId),
-    name: user.displayName || user.email || "User",
-    email: user.email || ""
-  };
-};
-
-const getStorageKeyForUser = (user) => `${STORAGE_PREFIX}.profile.${user.uid}`;
-
 const sanitizeEntryMap = (entries) => {
   const safeMap = new Map();
-
   for (const entry of entries) {
     if (!Array.isArray(entry) || entry.length < 2) {
       continue;
@@ -234,7 +296,6 @@ const sanitizeEntryMap = (entries) => {
 
     const id = Number(entry[0]);
     const qty = Number(entry[1]);
-
     if (!validPaintingIds.has(id) || !Number.isFinite(qty) || qty <= 0) {
       continue;
     }
@@ -278,13 +339,36 @@ const persistCurrentProfile = () => {
 const applyTheme = (theme) => {
   const nextTheme = theme === "night" ? "night" : "day";
   elements.body.dataset.theme = nextTheme;
-  elements.themeToggle.textContent = nextTheme === "night" ? "Switch to Day" : "Switch to Night";
+  elements.themeToggle.textContent = nextTheme === "night" ? "Day Mode" : "Night Mode";
   localStorage.setItem(THEME_KEY, nextTheme);
 };
 
 const initTheme = () => {
   const savedTheme = localStorage.getItem(THEME_KEY);
   applyTheme(savedTheme === "night" ? "night" : "day");
+};
+
+const providerFromFirebaseId = (providerId) => {
+  if (providerId === "google.com") {
+    return "google";
+  }
+  if (providerId === "facebook.com") {
+    return "facebook";
+  }
+  if (providerId === "apple.com") {
+    return "apple";
+  }
+  return "unknown";
+};
+
+const userFromFirebase = (user) => {
+  const primaryProviderId = user.providerData?.[0]?.providerId || user.providerId || "unknown";
+  return {
+    uid: String(user.uid || `uid-${Date.now()}`),
+    provider: providerFromFirebaseId(primaryProviderId),
+    name: user.displayName || user.email || "User",
+    email: user.email || ""
+  };
 };
 
 const buildViewerMeta = () => {
@@ -297,56 +381,94 @@ const buildViewerMeta = () => {
   return `${provider} account${email}`;
 };
 
+const updateProviderButtonState = () => {
+  const providerButtons = [
+    { key: "google", element: elements.googleLogin, label: "Google" },
+    { key: "apple", element: elements.appleLogin, label: "Apple" },
+    { key: "facebook", element: elements.facebookLogin, label: "Facebook" }
+  ];
+
+  for (const item of providerButtons) {
+    const enabledInConfig = isProviderEnabled(item.key);
+    const enabledNow = authButtonsLocked ? false : enabledInConfig ? state.authEnabled : true;
+
+    item.element.disabled = !enabledNow;
+    item.element.dataset.comingSoon = enabledInConfig ? "false" : "true";
+    item.element.title = enabledInConfig
+      ? `Continue with ${item.label}`
+      : `${item.label} integration coming soon`;
+  }
+};
+
+const setAuthButtonsDisabled = (isDisabled) => {
+  authButtonsLocked = isDisabled;
+  updateProviderButtonState();
+};
+
 const renderAuthBlock = () => {
   elements.viewerName.textContent = state.currentUser.name || "User";
   elements.viewerMeta.textContent = buildViewerMeta();
   elements.signoutBtn.hidden = state.currentUser.provider === "guest";
 };
 
+const renderMediumFilters = () => {
+  for (const button of elements.mediumButtons) {
+    const isActive = button.dataset.medium === state.selectedMedium;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", isActive ? "true" : "false");
+  }
+};
+
 const getVisiblePaintings = () =>
   paintings.filter((painting) => {
+    if (state.selectedMedium !== "all" && painting.medium !== state.selectedMedium) {
+      return false;
+    }
     if (state.favOnly && !state.favourites.has(painting.id)) {
       return false;
     }
-
     if (state.boughtOnly && !state.purchases.has(painting.id)) {
       return false;
     }
-
     return true;
   });
 
-const createPaintingTile = (painting, index) => {
-  const patternClass = tilePattern[index % tilePattern.length];
-  const number = String(painting.id).padStart(2, "0");
+const createFeaturedCard = (painting) => `
+  <article class="featured-card" data-open-id="${painting.id}" role="button" tabindex="0" aria-label="Open details for ${painting.title}">
+    <div class="featured-thumb" data-missing="false">
+      <img src="${painting.file}" alt="${painting.title} by Ved Sumeet Bub" loading="lazy" data-art-image="true" />
+      <div class="featured-overlay">
+        <span class="tag">Featured</span>
+        <h3>${painting.title}</h3>
+        <p class="featured-meta">${painting.medium} - ${painting.year}</p>
+      </div>
+    </div>
+  </article>
+`;
+
+const createGalleryCard = (painting) => {
   const favActive = state.favourites.has(painting.id);
   const cartQty = state.cart.get(painting.id) || 0;
   const boughtQty = state.purchases.get(painting.id) || 0;
 
   return `
-    <article class="art-tile ${patternClass}" style="animation-delay:${index * 35}ms">
-      <div class="tile-image" data-missing="false">
-        ${boughtQty > 0 ? `<span class="status-badge">Bought x${boughtQty}</span>` : ""}
-        <img
-          src="${painting.file}"
-          alt="${painting.title} by Ved Sumeet Bub"
-          loading="lazy"
-          decoding="async"
-        />
+    <article class="gallery-card" data-id="${painting.id}" role="button" tabindex="0" aria-label="Open details for ${painting.title}">
+      <div class="gallery-image" data-missing="false">
+        ${boughtQty > 0 ? `<span class="status-chip">Bought x${boughtQty}</span>` : ""}
+        <span class="card-number">#${painting.id}</span>
+        <img src="${painting.file}" alt="${painting.title} by Ved Sumeet Bub" loading="lazy" data-art-image="true" />
       </div>
-      <div class="tile-body">
-        <div class="tile-head">
-          <p class="tile-title">${number}. ${painting.title}</p>
-        </div>
-        <p class="tile-mood">${painting.mood}</p>
-        <div class="tile-actions">
-          <button class="tile-btn fav ${favActive ? "active" : ""}" type="button" data-action="toggle-fav" data-id="${painting.id}">
+      <div class="gallery-copy">
+        <p class="gallery-title">${painting.title}</p>
+        <p class="gallery-meta">${painting.medium} - ${painting.year}</p>
+        <div class="gallery-actions">
+          <button class="action-btn fav ${favActive ? "active" : ""}" type="button" data-action="toggle-fav" data-id="${painting.id}">
             ${favActive ? "Favourited" : "Favourite"}
           </button>
-          <button class="tile-btn cart" type="button" data-action="add-cart" data-id="${painting.id}">
-            ${cartQty > 0 ? `Add Cart (${cartQty})` : "Add Cart"}
+          <button class="action-btn cart" type="button" data-action="add-cart" data-id="${painting.id}">
+            ${cartQty > 0 ? `Cart (${cartQty})` : "Add Cart"}
           </button>
-          <button class="tile-btn buy" type="button" data-action="quick-buy" data-id="${painting.id}">
+          <button class="action-btn buy" type="button" data-action="quick-buy" data-id="${painting.id}">
             Buy Now
           </button>
         </div>
@@ -356,19 +478,15 @@ const createPaintingTile = (painting, index) => {
 };
 
 const attachImageFallbackHandlers = () => {
-  const images = elements.galleryGrid.querySelectorAll(".tile-image img");
-
+  const images = document.querySelectorAll("img[data-art-image='true']");
   for (const image of images) {
     image.addEventListener(
       "error",
       () => {
-        const frame = image.closest(".tile-image");
-
-        if (!frame) {
-          return;
+        const frame = image.closest("[data-missing]");
+        if (frame) {
+          frame.dataset.missing = "true";
         }
-
-        frame.dataset.missing = "true";
         image.remove();
       },
       { once: true }
@@ -376,22 +494,32 @@ const attachImageFallbackHandlers = () => {
   }
 };
 
+const renderFeatured = () => {
+  const featured = paintings.slice(0, 3);
+  elements.featuredGrid.innerHTML = featured.map(createFeaturedCard).join("");
+  attachImageFallbackHandlers();
+};
+
 const renderGallery = () => {
   const visiblePaintings = getVisiblePaintings();
-
-  if (visiblePaintings.length === 0) {
-    elements.galleryGrid.innerHTML = `
-      <div class="empty-wall">
-        No paintings match this filter yet. Toggle filters or add favourites and purchases.
-      </div>
-    `;
-  } else {
-    elements.galleryGrid.innerHTML = visiblePaintings.map(createPaintingTile).join("");
-    attachImageFallbackHandlers();
-  }
+  renderMediumFilters();
 
   elements.favFilterBtn.textContent = `Favourites Only: ${state.favOnly ? "On" : "Off"}`;
   elements.boughtFilterBtn.textContent = `Bought Only: ${state.boughtOnly ? "On" : "Off"}`;
+  elements.favFilterBtn.setAttribute("aria-pressed", state.favOnly ? "true" : "false");
+  elements.boughtFilterBtn.setAttribute("aria-pressed", state.boughtOnly ? "true" : "false");
+
+  if (visiblePaintings.length === 0) {
+    elements.galleryGrid.innerHTML = `
+      <div class="empty-grid">
+        No paintings match this filter yet. Try another medium or switch off active filters.
+      </div>
+    `;
+    return;
+  }
+
+  elements.galleryGrid.innerHTML = visiblePaintings.map(createGalleryCard).join("");
+  attachImageFallbackHandlers();
 };
 
 const renderCart = () => {
@@ -418,7 +546,6 @@ const renderCart = () => {
   elements.cartItems.innerHTML = entries
     .map(([id, qty]) => {
       const painting = getPainting(id);
-
       if (!painting) {
         return "";
       }
@@ -461,11 +588,9 @@ const renderSavedPanel = () => {
   elements.boughtList.innerHTML = purchaseEntries
     .map(([id, qty]) => {
       const painting = getPainting(id);
-
       if (!painting) {
         return "";
       }
-
       return `
         <li class="bought-item">
           <strong>${painting.title}</strong>
@@ -476,18 +601,90 @@ const renderSavedPanel = () => {
     .join("");
 };
 
+const closeModal = () => {
+  state.activePaintingId = null;
+  elements.modal.hidden = true;
+};
+
+const renderModal = () => {
+  if (!state.activePaintingId) {
+    elements.modal.hidden = true;
+    return;
+  }
+
+  const painting = getPainting(state.activePaintingId);
+  if (!painting) {
+    closeModal();
+    return;
+  }
+
+  const favActive = state.favourites.has(painting.id);
+  const cartQty = state.cart.get(painting.id) || 0;
+
+  elements.modal.hidden = false;
+  elements.modal.dataset.id = String(painting.id);
+  elements.modalNumber.textContent = `Painting #${painting.id}`;
+  elements.modalTitle.textContent = painting.title;
+  elements.modalMeta.textContent = `${painting.medium} - ${painting.year} - ${painting.mood}`;
+  elements.modalDescription.textContent = painting.description;
+  elements.modalImageFallback.hidden = true;
+  elements.modalImage.src = painting.file;
+  elements.modalImage.alt = `${painting.title} by Ved Sumeet Bub`;
+  elements.modalFavBtn.textContent = favActive ? "Favourited" : "Favourite";
+  elements.modalFavBtn.classList.toggle("active", favActive);
+  elements.modalCartBtn.textContent = cartQty > 0 ? `Add Cart (${cartQty})` : "Add Cart";
+};
+
+const openModal = (paintingId) => {
+  if (!validPaintingIds.has(paintingId)) {
+    return;
+  }
+  state.activePaintingId = paintingId;
+  renderModal();
+};
+
 const renderAll = () => {
   renderAuthBlock();
+  renderFeatured();
   renderGallery();
   renderCart();
   renderSavedPanel();
+  renderModal();
   elements.year.textContent = new Date().getFullYear();
+};
+
+const handlePaintingAction = (action, paintingId) => {
+  if (!validPaintingIds.has(paintingId)) {
+    return;
+  }
+
+  if (action === "toggle-fav") {
+    if (state.favourites.has(paintingId)) {
+      state.favourites.delete(paintingId);
+    } else {
+      state.favourites.add(paintingId);
+    }
+  }
+
+  if (action === "add-cart") {
+    const currentQty = state.cart.get(paintingId) || 0;
+    state.cart.set(paintingId, currentQty + 1);
+  }
+
+  if (action === "quick-buy") {
+    const currentQty = state.purchases.get(paintingId) || 0;
+    state.purchases.set(paintingId, currentQty + 1);
+    state.cart.delete(paintingId);
+  }
+
+  persistCurrentProfile();
+  renderAll();
 };
 
 const finalizeAuthUser = (firebaseUser) => {
   state.currentUser = userFromFirebase(firebaseUser);
   loadProfileForCurrentUser();
-  setAuthMessage(`Signed in as ${state.currentUser.name}. Personalized Ved collection is active.`);
+  setAuthMessage(`Signed in as ${state.currentUser.name}. Personalized Ved gallery memory is active.`);
   setAuthStatus("signed-in", "Auth Status: Signed In");
   renderAll();
 };
@@ -500,6 +697,9 @@ const setGuestMode = (message, status = "ready") => {
   renderAll();
 };
 
+const isFirebaseConfigValid = (config) =>
+  Boolean(config && config.apiKey && config.authDomain && config.projectId && config.appId);
+
 const initFirebaseAuth = async () => {
   const config = SOCIAL_CONFIG.firebase || {};
 
@@ -508,7 +708,7 @@ const initFirebaseAuth = async () => {
     state.authEnabled = false;
     setAuthButtonsDisabled(false);
     setGuestMode(
-      "Auth is not configured. Add Firebase keys in auth-config.js and enable Google/Facebook/Apple providers.",
+      "Auth is not configured. Add Firebase keys in auth-config.js and enable providers.",
       "config-missing"
     );
     setAuthStatus("config-missing", "Auth Status: Config Missing");
@@ -536,7 +736,7 @@ const initFirebaseAuth = async () => {
       if (firebaseUser) {
         finalizeAuthUser(firebaseUser);
       } else {
-        setGuestMode("You are in guest mode. Sign in to save favourites and purchases to your account.", "ready");
+        setGuestMode("You are in guest mode. Sign in to save favourites and bought paintings.", "ready");
         setAuthStatus("ready", "Auth Status: Ready");
       }
     });
@@ -545,21 +745,21 @@ const initFirebaseAuth = async () => {
     state.authReady = true;
     state.authEnabled = false;
     setAuthButtonsDisabled(false);
-    setGuestMode("Auth could not be initialized. Check Firebase config and authorized domains.", "error");
+    setGuestMode("Auth could not be initialized. Verify Firebase config and authorized domains.", "error");
     setAuthStatus("error", "Auth Status: Init Failed");
   }
 };
 
 const signInWithProvider = async (providerName) => {
   if (!isProviderEnabled(providerName)) {
-    const providerLabel = PROVIDER_LABELS[providerName] || "This";
+    const providerLabel = PROVIDER_LABELS[providerName] || "This provider";
     setAuthMessage(`${providerLabel} integration will be enabled soon.`);
     setAuthStatus("ready", "Auth Status: Ready");
     return;
   }
 
   if (!state.authEnabled || !firebaseAuth) {
-    setAuthMessage("Sign-up is not ready yet. Configure Firebase in auth-config.js first.");
+    setAuthMessage("Sign-up is not ready yet. Configure Firebase in auth-config.js.");
     setAuthStatus("config-missing", "Auth Status: Config Missing");
     return;
   }
@@ -605,51 +805,83 @@ const signInWithProvider = async (providerName) => {
     }
 
     console.error(error);
-    setAuthMessage(`Sign-in failed (${code || "unknown"}). Verify provider setup and authorized domains.`);
+    setAuthMessage(`Sign-in failed (${code || "unknown"}). Check provider setup and authorized domains.`);
     setAuthStatus("error", `Auth Status: Sign-in Failed (${code || "unknown"})`);
   }
 };
 
+elements.mediumButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    state.selectedMedium = button.dataset.medium || "all";
+    renderGallery();
+  });
+});
+
+elements.favFilterBtn.addEventListener("click", () => {
+  state.favOnly = !state.favOnly;
+  renderGallery();
+});
+
+elements.boughtFilterBtn.addEventListener("click", () => {
+  state.boughtOnly = !state.boughtOnly;
+  renderGallery();
+});
+
 elements.galleryGrid.addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-action]");
-
-  if (!button) {
+  const actionButton = event.target.closest("button[data-action]");
+  if (actionButton) {
+    handlePaintingAction(actionButton.dataset.action, Number(actionButton.dataset.id));
     return;
   }
 
-  const paintingId = Number(button.dataset.id);
-  const action = button.dataset.action;
+  const card = event.target.closest("article[data-id]");
+  if (card) {
+    openModal(Number(card.dataset.id));
+  }
+});
 
-  if (!validPaintingIds.has(paintingId)) {
+elements.galleryGrid.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") {
     return;
   }
 
-  if (action === "toggle-fav") {
-    if (state.favourites.has(paintingId)) {
-      state.favourites.delete(paintingId);
-    } else {
-      state.favourites.add(paintingId);
-    }
+  if (event.target.closest("button")) {
+    return;
   }
 
-  if (action === "add-cart") {
-    const currentQty = state.cart.get(paintingId) || 0;
-    state.cart.set(paintingId, currentQty + 1);
+  const card = event.target.closest("article[data-id]");
+  if (!card) {
+    return;
   }
 
-  if (action === "quick-buy") {
-    const currentQty = state.purchases.get(paintingId) || 0;
-    state.purchases.set(paintingId, currentQty + 1);
-    state.cart.delete(paintingId);
+  event.preventDefault();
+  openModal(Number(card.dataset.id));
+});
+
+elements.featuredGrid.addEventListener("click", (event) => {
+  const card = event.target.closest("article[data-open-id]");
+  if (!card) {
+    return;
+  }
+  openModal(Number(card.dataset.openId));
+});
+
+elements.featuredGrid.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") {
+    return;
   }
 
-  persistCurrentProfile();
-  renderAll();
+  const card = event.target.closest("article[data-open-id]");
+  if (!card) {
+    return;
+  }
+
+  event.preventDefault();
+  openModal(Number(card.dataset.openId));
 });
 
 elements.cartItems.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-cart-action]");
-
   if (!button) {
     return;
   }
@@ -695,17 +927,7 @@ elements.checkoutBtn.addEventListener("click", () => {
   state.cart.clear();
   persistCurrentProfile();
   renderAll();
-  window.alert("Purchase recorded and saved to your account profile.");
-});
-
-elements.favFilterBtn.addEventListener("click", () => {
-  state.favOnly = !state.favOnly;
-  renderGallery();
-});
-
-elements.boughtFilterBtn.addEventListener("click", () => {
-  state.boughtOnly = !state.boughtOnly;
-  renderGallery();
+  window.alert("Purchase recorded and saved to your profile.");
 });
 
 elements.themeToggle.addEventListener("click", () => {
@@ -718,7 +940,6 @@ elements.signoutBtn.addEventListener("click", async () => {
     await firebaseAuth.signOut();
     return;
   }
-
   setGuestMode("Signed out. You are in guest mode.", "ready");
   setAuthStatus("ready", "Auth Status: Ready");
 });
@@ -726,6 +947,46 @@ elements.signoutBtn.addEventListener("click", async () => {
 elements.googleLogin.addEventListener("click", () => signInWithProvider("google"));
 elements.appleLogin.addEventListener("click", () => signInWithProvider("apple"));
 elements.facebookLogin.addEventListener("click", () => signInWithProvider("facebook"));
+
+elements.modal.addEventListener("click", (event) => {
+  const shouldClose = event.target.closest("[data-close-modal='true']");
+  if (shouldClose) {
+    closeModal();
+    return;
+  }
+
+  if (event.target === elements.modalFavBtn) {
+    handlePaintingAction("toggle-fav", state.activePaintingId);
+    return;
+  }
+
+  if (event.target === elements.modalCartBtn) {
+    handlePaintingAction("add-cart", state.activePaintingId);
+    return;
+  }
+
+  if (event.target === elements.modalBuyBtn) {
+    handlePaintingAction("quick-buy", state.activePaintingId);
+  }
+});
+
+elements.modalClose.addEventListener("click", closeModal);
+
+elements.modalImage.addEventListener(
+  "error",
+  () => {
+    elements.modalImage.removeAttribute("src");
+    elements.modalImage.alt = "";
+    elements.modalImageFallback.hidden = false;
+  },
+  { once: false }
+);
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !elements.modal.hidden) {
+    closeModal();
+  }
+});
 
 initTheme();
 setAuthButtonsDisabled(true);

@@ -7,7 +7,7 @@ const yearNode = document.getElementById("year");
 const applyTheme = (theme) => {
   const nextTheme = theme === "night" ? "night" : "day";
   body.dataset.theme = nextTheme;
-  themeToggle.textContent = nextTheme === "night" ? "Switch to Day" : "Switch to Night";
+  themeToggle.textContent = nextTheme === "night" ? "Day Mode" : "Night Mode";
   localStorage.setItem(THEME_KEY, nextTheme);
 };
 
