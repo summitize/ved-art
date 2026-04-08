@@ -242,6 +242,11 @@ h1 {
   background: linear-gradient(120deg, color-mix(in srgb, var(--accent-4) 30%, white), color-mix(in srgb, var(--accent-2) 22%, white));
 }
 
+.auth-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .viewer-card {
   margin-top: 12px;
   border: 1px solid var(--line);

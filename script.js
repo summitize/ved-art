@@ -1,20 +1,21 @@
 const PAINTING_PRICE = 25000;
 const DELIVERY_CHARGE = 1200;
 
-const STORAGE_PREFIX = "ved.art.v3";
+const STORAGE_PREFIX = "ved.art.v4";
 const THEME_KEY = `${STORAGE_PREFIX}.theme`;
-const SESSION_KEY = `${STORAGE_PREFIX}.session`;
 
 const SOCIAL_CONFIG = {
-  googleClientId: "",
-  facebookAppId: "",
-  appleClientId: "",
-  appleRedirectURI: "",
+  firebase: {
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    appId: ""
+  },
   ...(window.VED_SOCIAL_CONFIG || {})
 };
 
 const GUEST_USER = {
-  id: "local-guest",
+  uid: "guest-device",
   provider: "guest",
   name: "Guest Collector",
   email: ""
@@ -24,7 +25,8 @@ const PROVIDER_LABELS = {
   guest: "Guest",
   google: "Google",
   apple: "Apple",
-  facebook: "Facebook"
+  facebook: "Facebook",
+  unknown: "Social"
 };
 
 const paintingSeed = [
@@ -96,11 +98,13 @@ const state = {
   cart: new Map(),
   purchases: new Map(),
   favOnly: false,
-  boughtOnly: false
+  boughtOnly: false,
+  authReady: false,
+  authEnabled: false
 };
 
 const loadedScripts = new Map();
-let facebookInitPromise = null;
+let firebaseAuth = null;
 
 const parseJson = (value, fallback) => {
   try {
@@ -123,21 +127,10 @@ const setAuthMessage = (text) => {
   elements.authMessage.textContent = text;
 };
 
-const decodeJwtPayload = (token) => {
-  try {
-    const encoded = token.split(".")[1];
-
-    if (!encoded) {
-      return {};
-    }
-
-    const normalized = encoded.replace(/-/g, "+").replace(/_/g, "/");
-    const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
-    const json = atob(padded);
-    return JSON.parse(json);
-  } catch {
-    return {};
-  }
+const setAuthButtonsDisabled = (isDisabled) => {
+  elements.googleLogin.disabled = isDisabled;
+  elements.appleLogin.disabled = isDisabled;
+  elements.facebookLogin.disabled = isDisabled;
 };
 
 const loadScriptOnce = (id, src) => {
@@ -154,8 +147,8 @@ const loadScriptOnce = (id, src) => {
     }
 
     const script = document.createElement("script");
-    script.src = src;
     script.id = id;
+    script.src = src;
     script.async = true;
     script.onload = () => resolve();
     script.onerror = () => reject(new Error(`Unable to load ${src}`));
@@ -166,7 +159,37 @@ const loadScriptOnce = (id, src) => {
   return promise;
 };
 
-const getStorageKeyForUser = (user) => `${STORAGE_PREFIX}.profile.${user.provider}.${user.id}`;
+const isFirebaseConfigValid = (config) =>
+  Boolean(config && config.apiKey && config.authDomain && config.projectId && config.appId);
+
+const providerFromFirebaseId = (providerId) => {
+  if (providerId === "google.com") {
+    return "google";
+  }
+
+  if (providerId === "facebook.com") {
+    return "facebook";
+  }
+
+  if (providerId === "apple.com") {
+    return "apple";
+  }
+
+  return "unknown";
+};
+
+const userFromFirebase = (user) => {
+  const primaryProviderId = user.providerData?.[0]?.providerId || user.providerId || "unknown";
+
+  return {
+    uid: String(user.uid || `uid-${Date.now()}`),
+    provider: providerFromFirebaseId(primaryProviderId),
+    name: user.displayName || user.email || "Collector",
+    email: user.email || ""
+  };
+};
+
+const getStorageKeyForUser = (user) => `${STORAGE_PREFIX}.profile.${user.uid}`;
 
 const sanitizeEntryMap = (entries) => {
   const safeMap = new Map();
@@ -219,15 +242,6 @@ const persistCurrentProfile = () => {
   localStorage.setItem(storageKey, JSON.stringify(payload));
 };
 
-const persistSession = () => {
-  if (state.currentUser.provider === "guest") {
-    localStorage.removeItem(SESSION_KEY);
-    return;
-  }
-
-  localStorage.setItem(SESSION_KEY, JSON.stringify(state.currentUser));
-};
-
 const applyTheme = (theme) => {
   const nextTheme = theme === "night" ? "night" : "day";
   elements.body.dataset.theme = nextTheme;
@@ -245,9 +259,9 @@ const buildViewerMeta = () => {
     return "Guest mode on this device";
   }
 
-  const provider = PROVIDER_LABELS[state.currentUser.provider] || "Social";
+  const provider = PROVIDER_LABELS[state.currentUser.provider] || PROVIDER_LABELS.unknown;
   const email = state.currentUser.email ? ` | ${state.currentUser.email}` : "";
-  return `${provider} profile${email}`;
+  return `${provider} account${email}`;
 };
 
 const renderAuthBlock = () => {
@@ -437,218 +451,110 @@ const renderAll = () => {
   elements.year.textContent = new Date().getFullYear();
 };
 
-const finalizeSocialLogin = (user) => {
-  state.currentUser = {
-    id: String(user.id),
-    provider: user.provider,
-    name: user.name || "Collector",
-    email: user.email || ""
-  };
-
-  persistSession();
+const finalizeAuthUser = (firebaseUser) => {
+  state.currentUser = userFromFirebase(firebaseUser);
   loadProfileForCurrentUser();
-  setAuthMessage(`Welcome ${state.currentUser.name}. Your Ved collection memory is active.`);
+  setAuthMessage(`Signed in as ${state.currentUser.name}. Personalized Ved collection is active.`);
   renderAll();
 };
 
-const runFallbackProfileLogin = (provider) => {
-  const providerName = PROVIDER_LABELS[provider] || "Social";
-  const name = window.prompt(`Enter your name for ${providerName} profile mode:`);
-
-  if (!name) {
-    return;
-  }
-
-  const email = window.prompt(`Enter your email for ${providerName} profile mode (optional):`) || "";
-  const stableIdSeed = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  const stableId = stableIdSeed ? `${provider}-${stableIdSeed}` : `${provider}-${Date.now()}`;
-
-  finalizeSocialLogin({
-    id: stableId,
-    provider,
-    name: name.trim(),
-    email: email.trim()
-  });
-
-  setAuthMessage(`${providerName} OAuth key not configured, so local profile mode is running.`);
+const setGuestMode = (message) => {
+  state.currentUser = { ...GUEST_USER };
+  loadProfileForCurrentUser();
+  setAuthMessage(message);
+  renderAll();
 };
 
-const loginWithGoogle = async () => {
-  if (!SOCIAL_CONFIG.googleClientId) {
-    runFallbackProfileLogin("google");
+const initFirebaseAuth = async () => {
+  const config = SOCIAL_CONFIG.firebase || {};
+
+  if (!isFirebaseConfigValid(config)) {
+    state.authReady = true;
+    state.authEnabled = false;
+    setAuthButtonsDisabled(false);
+    setGuestMode("Auth is not configured. Add Firebase keys in auth-config.js and enable Google/Facebook/Apple providers.");
     return;
   }
 
   try {
-    await loadScriptOnce("google-identity-sdk", "https://accounts.google.com/gsi/client");
+    await loadScriptOnce("firebase-app-compat", "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js");
+    await loadScriptOnce("firebase-auth-compat", "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js");
 
-    if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
-      throw new Error("Google SDK unavailable");
+    if (!window.firebase || !window.firebase.auth) {
+      throw new Error("Firebase SDK failed to initialize");
     }
 
-    const accessToken = await new Promise((resolve, reject) => {
-      const client = window.google.accounts.oauth2.initTokenClient({
-        client_id: SOCIAL_CONFIG.googleClientId,
-        scope: "openid profile email",
-        callback: (response) => {
-          if (response.error || !response.access_token) {
-            reject(new Error(response.error || "Google authentication failed"));
-            return;
-          }
-
-          resolve(response.access_token);
-        }
-      });
-
-      client.requestAccessToken({ prompt: "consent" });
-    });
-
-    const profileResponse = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-
-    if (!profileResponse.ok) {
-      throw new Error("Unable to fetch Google profile");
+    if (!window.firebase.apps.length) {
+      window.firebase.initializeApp(config);
     }
 
-    const profile = await profileResponse.json();
+    firebaseAuth = window.firebase.auth();
+    state.authEnabled = true;
+    state.authReady = true;
+    setAuthButtonsDisabled(false);
 
-    finalizeSocialLogin({
-      id: profile.sub || profile.email || `google-${Date.now()}`,
-      provider: "google",
-      name: profile.name || "Google Collector",
-      email: profile.email || ""
-    });
-  } catch (error) {
-    console.error(error);
-    runFallbackProfileLogin("google");
-  }
-};
-
-const ensureFacebookSdk = async () => {
-  if (facebookInitPromise) {
-    return facebookInitPromise;
-  }
-
-  facebookInitPromise = new Promise(async (resolve, reject) => {
-    if (!SOCIAL_CONFIG.facebookAppId) {
-      reject(new Error("Facebook App ID missing"));
-      return;
-    }
-
-    try {
-      await loadScriptOnce("facebook-jssdk", "https://connect.facebook.net/en_US/sdk.js");
-    } catch (error) {
-      reject(error);
-      return;
-    }
-
-    const tryInit = () => {
-      if (!window.FB || !window.FB.init) {
-        reject(new Error("Facebook SDK unavailable"));
-        return;
+    firebaseAuth.onAuthStateChanged((firebaseUser) => {
+      if (firebaseUser) {
+        finalizeAuthUser(firebaseUser);
+      } else {
+        setGuestMode("You are in guest mode. Sign in to save favourites and purchases to your account.");
       }
-
-      window.FB.init({
-        appId: SOCIAL_CONFIG.facebookAppId,
-        cookie: true,
-        xfbml: false,
-        version: "v20.0"
-      });
-
-      resolve();
-    };
-
-    setTimeout(tryInit, 150);
-  });
-
-  return facebookInitPromise;
-};
-
-const loginWithFacebook = async () => {
-  if (!SOCIAL_CONFIG.facebookAppId) {
-    runFallbackProfileLogin("facebook");
-    return;
-  }
-
-  try {
-    await ensureFacebookSdk();
-
-    await new Promise((resolve, reject) => {
-      window.FB.login(
-        (response) => {
-          if (!response || !response.authResponse) {
-            reject(new Error("Facebook login cancelled"));
-            return;
-          }
-
-          resolve();
-        },
-        { scope: "public_profile,email" }
-      );
-    });
-
-    const profile = await new Promise((resolve, reject) => {
-      window.FB.api("/me", { fields: "id,name,email" }, (response) => {
-        if (!response || response.error) {
-          reject(new Error("Unable to fetch Facebook profile"));
-          return;
-        }
-
-        resolve(response);
-      });
-    });
-
-    finalizeSocialLogin({
-      id: profile.id || `facebook-${Date.now()}`,
-      provider: "facebook",
-      name: profile.name || "Facebook Collector",
-      email: profile.email || ""
     });
   } catch (error) {
     console.error(error);
-    runFallbackProfileLogin("facebook");
+    state.authReady = true;
+    state.authEnabled = false;
+    setAuthButtonsDisabled(false);
+    setGuestMode("Auth could not be initialized. Check Firebase config and authorized domains.");
   }
 };
 
-const loginWithApple = async () => {
-  if (!SOCIAL_CONFIG.appleClientId || !SOCIAL_CONFIG.appleRedirectURI) {
-    runFallbackProfileLogin("apple");
+const signInWithProvider = async (providerName) => {
+  if (!state.authEnabled || !firebaseAuth) {
+    setAuthMessage("Sign-up is not ready yet. Configure Firebase in auth-config.js first.");
+    return;
+  }
+
+  let provider = null;
+
+  if (providerName === "google") {
+    provider = new window.firebase.auth.GoogleAuthProvider();
+    provider.addScope("email");
+    provider.addScope("profile");
+  }
+
+  if (providerName === "facebook") {
+    provider = new window.firebase.auth.FacebookAuthProvider();
+    provider.addScope("email");
+  }
+
+  if (providerName === "apple") {
+    provider = new window.firebase.auth.OAuthProvider("apple.com");
+    provider.addScope("email");
+    provider.addScope("name");
+  }
+
+  if (!provider) {
+    setAuthMessage("Unsupported provider.");
     return;
   }
 
   try {
-    await loadScriptOnce(
-      "apple-id-sdk",
-      "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"
-    );
+    await firebaseAuth.signInWithPopup(provider);
+  } catch (error) {
+    const code = error && error.code ? error.code : "";
 
-    if (!window.AppleID || !window.AppleID.auth) {
-      throw new Error("Apple SDK unavailable");
+    if (code === "auth/popup-blocked" || code === "auth/popup-closed-by-user") {
+      try {
+        await firebaseAuth.signInWithRedirect(provider);
+        return;
+      } catch (redirectError) {
+        console.error(redirectError);
+      }
     }
 
-    window.AppleID.auth.init({
-      clientId: SOCIAL_CONFIG.appleClientId,
-      scope: "name email",
-      redirectURI: SOCIAL_CONFIG.appleRedirectURI,
-      usePopup: true
-    });
-
-    const response = await window.AppleID.auth.signIn();
-    const tokenPayload = decodeJwtPayload(response.authorization?.id_token || "");
-    const firstName = response.user?.name?.firstName || "";
-    const lastName = response.user?.name?.lastName || "";
-    const fullName = `${firstName} ${lastName}`.trim();
-
-    finalizeSocialLogin({
-      id: tokenPayload.sub || `apple-${Date.now()}`,
-      provider: "apple",
-      name: fullName || tokenPayload.name || "Apple Collector",
-      email: tokenPayload.email || ""
-    });
-  } catch (error) {
     console.error(error);
-    runFallbackProfileLogin("apple");
+    setAuthMessage(`Sign-in failed (${code || "unknown"}). Verify provider setup and authorized domains.`);
   }
 };
 
@@ -737,7 +643,7 @@ elements.checkoutBtn.addEventListener("click", () => {
   state.cart.clear();
   persistCurrentProfile();
   renderAll();
-  window.alert("Purchase recorded. Bought paintings were saved to your profile.");
+  window.alert("Purchase recorded and saved to your account profile.");
 });
 
 elements.favFilterBtn.addEventListener("click", () => {
@@ -752,46 +658,24 @@ elements.boughtFilterBtn.addEventListener("click", () => {
 
 elements.themeToggle.addEventListener("click", () => {
   const currentTheme = elements.body.dataset.theme === "night" ? "night" : "day";
-  const nextTheme = currentTheme === "night" ? "day" : "night";
-  applyTheme(nextTheme);
+  applyTheme(currentTheme === "night" ? "day" : "night");
 });
 
-elements.signoutBtn.addEventListener("click", () => {
-  state.currentUser = { ...GUEST_USER };
-  persistSession();
-  loadProfileForCurrentUser();
-  setAuthMessage("Signed out. You are in guest mode.");
-  renderAll();
-});
-
-elements.googleLogin.addEventListener("click", loginWithGoogle);
-elements.facebookLogin.addEventListener("click", loginWithFacebook);
-elements.appleLogin.addEventListener("click", loginWithApple);
-
-const initSession = () => {
-  const savedSession = parseJson(localStorage.getItem(SESSION_KEY), null);
-
-  if (
-    savedSession &&
-    typeof savedSession === "object" &&
-    savedSession.id &&
-    savedSession.provider &&
-    savedSession.name
-  ) {
-    state.currentUser = {
-      id: String(savedSession.id),
-      provider: String(savedSession.provider),
-      name: String(savedSession.name),
-      email: typeof savedSession.email === "string" ? savedSession.email : ""
-    };
-  } else {
-    state.currentUser = { ...GUEST_USER };
+elements.signoutBtn.addEventListener("click", async () => {
+  if (firebaseAuth && state.currentUser.provider !== "guest") {
+    await firebaseAuth.signOut();
+    return;
   }
 
-  loadProfileForCurrentUser();
-};
+  setGuestMode("Signed out. You are in guest mode.");
+});
+
+elements.googleLogin.addEventListener("click", () => signInWithProvider("google"));
+elements.appleLogin.addEventListener("click", () => signInWithProvider("apple"));
+elements.facebookLogin.addEventListener("click", () => signInWithProvider("facebook"));
 
 initTheme();
-initSession();
-setAuthMessage("Sign in with Google, Apple, or Facebook to personalize Ved's collection memory.");
+setAuthButtonsDisabled(true);
 renderAll();
+setAuthMessage("Initializing authentication...");
+initFirebaseAuth();

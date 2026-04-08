@@ -1,6 +1,8 @@
 window.VED_SOCIAL_CONFIG = {
-  googleClientId: "",
-  facebookAppId: "",
-  appleClientId: "",
-  appleRedirectURI: ""
+  firebase: {
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    appId: ""
+  }
 };
