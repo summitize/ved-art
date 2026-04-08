@@ -17,7 +17,7 @@ const SOCIAL_CONFIG = {
 const GUEST_USER = {
   uid: "guest-device",
   provider: "guest",
-  name: "Guest Collector",
+  name: "Guest User",
   email: ""
 };
 
@@ -184,7 +184,7 @@ const userFromFirebase = (user) => {
   return {
     uid: String(user.uid || `uid-${Date.now()}`),
     provider: providerFromFirebaseId(primaryProviderId),
-    name: user.displayName || user.email || "Collector",
+    name: user.displayName || user.email || "User",
     email: user.email || ""
   };
 };
@@ -265,7 +265,7 @@ const buildViewerMeta = () => {
 };
 
 const renderAuthBlock = () => {
-  elements.viewerName.textContent = state.currentUser.name || "Collector";
+  elements.viewerName.textContent = state.currentUser.name || "User";
   elements.viewerMeta.textContent = buildViewerMeta();
   elements.signoutBtn.hidden = state.currentUser.provider === "guest";
 };

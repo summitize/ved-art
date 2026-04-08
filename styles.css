@@ -484,7 +484,7 @@ h1 {
   background: color-mix(in srgb, var(--bg-soft) 80%, transparent 20%);
 }
 
-.collector-column {
+.viewer-column {
   display: grid;
   gap: 12px;
 }
