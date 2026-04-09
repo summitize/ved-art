@@ -970,8 +970,6 @@ elements.modal.addEventListener("click", (event) => {
   }
 });
 
-elements.modalClose.addEventListener("click", closeModal);
-
 elements.modalImage.addEventListener(
   "error",
   () => {
