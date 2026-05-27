@@ -2,20 +2,20 @@
 
 Place painting images in this folder using these names:
 
-- `painting-01.jpg`
-- `painting-02.jpg`
-- `painting-03.jpg`
-- `painting-04.jpg`
-- `painting-05.jpg`
-- `painting-06.jpg`
-- `painting-07.jpg`
-- `painting-08.jpg`
-- `painting-09.jpg`
-- `painting-10.jpg`
-- `painting-11.jpg`
-- `painting-12.jpg`
-- `painting-13.jpg`
-- `painting-14.jpg`
-- `painting-15.jpg`
+- `page_1.jpg`
+- `page_2.jpg`
+- `page_3.jpg`
+- `page_4.jpg`
+- `page_5.jpg`
+- `page_6.jpg`
+- `page_7.jpg`
+- `page_8.jpg`
+- `page_9.jpg`
+- `page_10.jpg`
+- `page_11.jpg`
+- `page_12.jpg`
+- `page_13.jpg`
+- `page_14.jpg`
+- `page_15.jpg`
 
 PNG images can also be used if you update `script.js` paths.

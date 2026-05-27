@@ -135,7 +135,7 @@ const paintings = paintingSeed.map((painting, index) => ({
   description: painting.description,
   medium: mediumCycle[index % mediumCycle.length],
   year: index % 2 === 0 ? "2025" : "2024",
-  file: `arts/painting-${String(index + 1).padStart(2, "0")}.jpg`,
+  file: `arts/page_${index + 1}.jpg`,
   price: painting.price
 }));
 
