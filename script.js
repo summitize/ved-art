@@ -37,91 +37,91 @@ const mediumCycle = ["Acrylic on Canvas", "Oil on Canvas", "Watercolor", "Mixed 
 
 const paintingSeed = [
   {
-    title: "Ved's Color Drift",
+    title: "Sapphire Current",
     mood: "Vibrant Flow",
     description: "A sweeping dance of sapphire and gold, capturing the ephemeral moment when light bends through moving water.",
     price: 18500
   },
   {
-    title: "Ved's River Echo",
+    title: "Azure Whisper",
     mood: "Calm Pulse",
     description: "Delicate ripples of azure and silver whisper stories of ancient currents, inviting the viewer into a state of deep reflection.",
     price: 12000
   },
   {
-    title: "Ved's Dawn Rhythm",
+    title: "Morning Pulse",
     mood: "Fresh Light",
     description: "The first light of day breaks across the canvas in rhythmic pulses of amber and pearl, signaling a new beginning.",
     price: 15500
   },
   {
-    title: "Ved's Quiet Bloom",
+    title: "Twilight Blossom",
     mood: "Soft Energy",
     description: "A subtle exploration of organic growth, where soft pastels emerge from the shadows like a flower opening at twilight.",
     price: 5500
   },
   {
-    title: "Ved's Golden Pause",
+    title: "Stillness in Ochre",
     mood: "Warm Glow",
     description: "Rich metallic textures collide with sun-drenched ochre, freezing a single moment of absolute stillness in time.",
     price: 22000
   },
   {
-    title: "Ved's Street Sonata",
+    title: "Midnight Metro",
     mood: "Urban Melody",
     description: "The chaotic energy of a midnight metropolis is transformed into a melodic arrangement of geometric shapes and neon flashes.",
     price: 9500
   },
   {
-    title: "Ved's Monsoon Notes",
+    title: "Monsoon Reverie",
     mood: "Rain Memory",
     description: "Deep indigo washes and sharp white highlights recreate the sensory experience of a sudden tropical downpour.",
     price: 14000
   },
   {
-    title: "Ved's Bold Horizon",
+    title: "Edge of Infinity",
     mood: "Open Sky",
     description: "A fearless journey into the unknown, defined by a sharp, uncompromising line that separates the earth from the infinite sky.",
     price: 25000
   },
   {
-    title: "Ved's Sun Fragments",
+    title: "Shattered Radiance",
     mood: "Radiant Layer",
     description: "Scattered rays of light are caught in a kaleidoscope of warm tones, representing the fractured nature of memory.",
     price: 11500
   },
   {
-    title: "Ved's Living Texture",
+    title: "Tactile Moment",
     mood: "Raw Detail",
     description: "A visceral, high-relief composition where the physical presence of the paint speaks louder than the colors themselves.",
     price: 8000
   },
   {
-    title: "Ved's City Mirage",
+    title: "Urban Haze",
     mood: "Electric Calm",
     description: "Towering structures dissolve into a haze of atmospheric grays and blues, questioning the permanence of the urban landscape.",
     price: 19500
   },
   {
-    title: "Ved's Memory Garden",
+    title: "Nostalgic Garden",
     mood: "Floral Pulse",
     description: "A nostalgic tapestry of vibrant wildflowers, painted with the raw honesty and uninhibited joy of a child's imagination.",
     price: 13500
   },
   {
-    title: "Ved's Silent Lantern",
+    title: "Lone Lantern",
     mood: "Night Glow",
     description: "A singular point of warmth pierces through a vast, velvety darkness, symbolizing hope in the midst of solitude.",
     price: 7500
   },
   {
-    title: "Ved's Ocean Breath",
+    title: "Tidal Exhale",
     mood: "Tidal Drift",
     description: "Colossal swells of turquoise and foam heave with a rhythmic intensity that mirrors the life force of the sea.",
     price: 21000
   },
   {
-    title: "Ved's Crimson Orbit",
+    title: "Scarlet Orbit",
     mood: "Fiery Motion",
     description: "A celestial explosion of fiery reds and deep blacks, mapping the trajectory of an unspoken passion through the void.",
     price: 17000
