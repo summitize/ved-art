@@ -1,4 +1,3 @@
-const PAINTING_PRICE = 25000;
 const DELIVERY_CHARGE = 1200;
 
 const STORAGE_PREFIX = "ved.art.v4";
@@ -40,127 +39,92 @@ const paintingSeed = [
   {
     title: "Ved's Color Drift",
     mood: "Vibrant Flow",
-    description: "An energetic play of layered hues where Ved turns color into rhythm."
+    description: "A sweeping dance of sapphire and gold, capturing the ephemeral moment when light bends through moving water.",
+    price: 18500
   },
   {
     title: "Ved's River Echo",
     mood: "Calm Pulse",
-    description: "Soft water-inspired movement capturing serenity and quiet motion."
+    description: "Delicate ripples of azure and silver whisper stories of ancient currents, inviting the viewer into a state of deep reflection.",
+    price: 12000
   },
   {
     title: "Ved's Dawn Rhythm",
     mood: "Fresh Light",
-    description: "A luminous morning composition built with bright transitions and open space."
+    description: "The first light of day breaks across the canvas in rhythmic pulses of amber and pearl, signaling a new beginning.",
+    price: 15500
   },
   {
     title: "Ved's Quiet Bloom",
     mood: "Soft Energy",
-    description: "Petal-like forms and gentle textures celebrating calm confidence."
+    description: "A subtle exploration of organic growth, where soft pastels emerge from the shadows like a flower opening at twilight.",
+    price: 5500
   },
   {
     title: "Ved's Golden Pause",
     mood: "Warm Glow",
-    description: "Warm tones and layered brushwork creating a meditative pause on canvas."
+    description: "Rich metallic textures collide with sun-drenched ochre, freezing a single moment of absolute stillness in time.",
+    price: 22000
   },
   {
     title: "Ved's Street Sonata",
     mood: "Urban Melody",
-    description: "A city-inspired arrangement where geometry and color pulse together."
+    description: "The chaotic energy of a midnight metropolis is transformed into a melodic arrangement of geometric shapes and neon flashes.",
+    price: 9500
   },
   {
     title: "Ved's Monsoon Notes",
     mood: "Rain Memory",
-    description: "Rain-washed textures and tonal contrasts that feel like monsoon music."
+    description: "Deep indigo washes and sharp white highlights recreate the sensory experience of a sudden tropical downpour.",
+    price: 14000
   },
   {
     title: "Ved's Bold Horizon",
     mood: "Open Sky",
-    description: "Expansive horizon lines expressing curiosity and fearless imagination."
+    description: "A fearless journey into the unknown, defined by a sharp, uncompromising line that separates the earth from the infinite sky.",
+    price: 25000
   },
   {
     title: "Ved's Sun Fragments",
     mood: "Radiant Layer",
-    description: "Broken sunlight effects assembled through expressive mark-making."
+    description: "Scattered rays of light are caught in a kaleidoscope of warm tones, representing the fractured nature of memory.",
+    price: 11500
   },
   {
     title: "Ved's Living Texture",
     mood: "Raw Detail",
-    description: "A tactile study of texture where every stroke adds visual tension."
+    description: "A visceral, high-relief composition where the physical presence of the paint speaks louder than the colors themselves.",
+    price: 8000
   },
   {
     title: "Ved's City Mirage",
     mood: "Electric Calm",
-    description: "Urban abstraction balancing movement with stillness."
+    description: "Towering structures dissolve into a haze of atmospheric grays and blues, questioning the permanence of the urban landscape.",
+    price: 19500
   },
   {
     title: "Ved's Memory Garden",
     mood: "Floral Pulse",
-    description: "A vivid floral world shaped by playful, youthful color decisions."
+    description: "A nostalgic tapestry of vibrant wildflowers, painted with the raw honesty and uninhibited joy of a child's imagination.",
+    price: 13500
   },
   {
     title: "Ved's Silent Lantern",
     mood: "Night Glow",
-    description: "A dark-light contrast piece that explores glow and mystery."
+    description: "A singular point of warmth pierces through a vast, velvety darkness, symbolizing hope in the midst of solitude.",
+    price: 7500
   },
   {
     title: "Ved's Ocean Breath",
     mood: "Tidal Drift",
-    description: "Wave-like transitions and layered blues that breathe across the canvas."
+    description: "Colossal swells of turquoise and foam heave with a rhythmic intensity that mirrors the life force of the sea.",
+    price: 21000
   },
   {
     title: "Ved's Crimson Orbit",
     mood: "Fiery Motion",
-    description: "A dynamic red-led composition full of momentum and dramatic contrast."
-  },
-  {
-    title: "Ved's Morning Terrace",
-    mood: "Light Breeze",
-    description: "Airy tonal shifts that suggest open mornings and gentle sunlight."
-  },
-  {
-    title: "Ved's Hidden Valley",
-    mood: "Earth Tone",
-    description: "Natural pigments and grounded structure inspired by landscape memory."
-  },
-  {
-    title: "Ved's Chroma Rain",
-    mood: "Playful Burst",
-    description: "Bold splash-like passages celebrating spontaneous color play."
-  },
-  {
-    title: "Ved's Skyline Verse",
-    mood: "Neon Air",
-    description: "A skyline-driven painting with electric accents and poetic spacing."
-  },
-  {
-    title: "Ved's Sunset Geometry",
-    mood: "Shape & Heat",
-    description: "Structured forms and warm gradients meeting at day's edge."
-  },
-  {
-    title: "Ved's Indigo Silence",
-    mood: "Deep Tone",
-    description: "A contemplative indigo study exploring depth and still emotion."
-  },
-  {
-    title: "Ved's Morning Pulse",
-    mood: "Bright Calm",
-    description: "Light-filled and optimistic, with balanced visual cadence."
-  },
-  {
-    title: "Ved's Earth Chorus",
-    mood: "Organic Beat",
-    description: "Layered earthy hues arranged like a visual chorus."
-  },
-  {
-    title: "Ved's Soft Thunder",
-    mood: "Charged Air",
-    description: "Subtle contrasts and textured passages suggesting distant thunder."
-  },
-  {
-    title: "Ved's Last Light",
-    mood: "Evening Story",
-    description: "A warm ending note where Ved captures the day's final glow."
+    description: "A celestial explosion of fiery reds and deep blacks, mapping the trajectory of an unspoken passion through the void.",
+    price: 17000
   }
 ];
 
@@ -172,7 +136,7 @@ const paintings = paintingSeed.map((painting, index) => ({
   medium: mediumCycle[index % mediumCycle.length],
   year: index % 2 === 0 ? "2025" : "2024",
   file: `arts/painting-${String(index + 1).padStart(2, "0")}.jpg`,
-  price: PAINTING_PRICE
+  price: painting.price
 }));
 
 const validPaintingIds = new Set(paintings.map((painting) => painting.id));
