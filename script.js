@@ -1,6 +1,5 @@
 const STORAGE_PREFIX = "ved.art.v4";
 const THEME_KEY = `${STORAGE_PREFIX}.theme`;
-const UPLOADS_KEY = `${STORAGE_PREFIX}.uploads`;
 
 const SOCIAL_CONFIG = {
   firebase: {
@@ -218,42 +217,6 @@ const formatCurrency = (amount) =>
     maximumFractionDigits: 0
   }).format(amount);
 
-const customUploads = new Map();
-
-const loadCustomUploads = () => {
-  const saved = parseJson(localStorage.getItem(UPLOADS_KEY), {});
-  customUploads.clear();
-
-  if (saved && typeof saved === "object") {
-    for (const entry of Object.entries(saved)) {
-      const id = Number(entry[0]);
-      const payload = entry[1];
-      if (!Number.isFinite(id) || !payload || typeof payload.dataUrl !== "string") {
-        continue;
-      }
-      customUploads.set(id, {
-        dataUrl: payload.dataUrl,
-        fileName: payload.fileName || "",
-        type: payload.type || "",
-        updatedAt: payload.updatedAt || new Date().toISOString()
-      });
-    }
-  }
-};
-
-const persistCustomUploads = () => {
-  const payload = {};
-  for (const [id, upload] of customUploads.entries()) {
-    payload[id] = {
-      dataUrl: upload.dataUrl,
-      fileName: upload.fileName,
-      type: upload.type,
-      updatedAt: upload.updatedAt
-    };
-  }
-  localStorage.setItem(UPLOADS_KEY, JSON.stringify(payload));
-};
-
 const getPainting = (id) => paintings.find((painting) => painting.id === id);
 const isProviderEnabled = (providerName) => Boolean((SOCIAL_CONFIG.providers || {})[providerName]);
 const getStorageKeyForUser = (user) => `${STORAGE_PREFIX}.profile.${user.uid}`;
@@ -438,10 +401,7 @@ const getVisiblePaintings = () =>
     return true;
   });
 
-const getPaintingImageSource = (painting) => {
-  const upload = customUploads.get(painting.id);
-  return upload?.dataUrl || painting.file;
-};
+const getPaintingImageSource = (painting) => painting.file;
 
 const createFeaturedCard = (painting) => `
   <article class="featured-card" data-open-id="${painting.id}" role="button" tabindex="0" aria-label="Open details for ${painting.title}">
@@ -545,7 +505,6 @@ const updateUploadPreview = () => {
   }
 
   const selectedId = Number(elements.uploadPaintingId.value);
-  const custom = customUploads.get(selectedId);
 
   if (elements.uploadFile.files && elements.uploadFile.files.length > 0) {
     const file = elements.uploadFile.files[0];
@@ -556,39 +515,19 @@ const updateUploadPreview = () => {
     return;
   }
 
-  if (custom) {
-    elements.uploadPreviewImg.src = custom.dataUrl;
-    elements.uploadPreviewImg.hidden = false;
-    elements.uploadPreviewText.textContent = `Custom image currently stored for painting #${selectedId}.`;
-    return;
-  }
-
   elements.uploadPreviewImg.hidden = true;
   elements.uploadPreviewText.textContent = "Select an image and painting slot to preview.";
 };
 
 const clearUploadForSelectedPainting = () => {
-  if (!elements.uploadPaintingId) {
+  if (!elements.uploadFile || !elements.uploadPreviewImg || !elements.uploadPreviewText || !elements.uploadStatus) {
     return;
   }
 
-  const paintingId = Number(elements.uploadPaintingId.value);
-  if (!validPaintingIds.has(paintingId)) {
-    setUploadStatus("Select a valid painting slot before clearing.", true);
-    return;
-  }
-
-  if (!customUploads.has(paintingId)) {
-    setUploadStatus(`No custom image is stored for painting #${paintingId}.`);
-    return;
-  }
-
-  customUploads.delete(paintingId);
-  persistCustomUploads();
-  setUploadStatus(`Custom image removed for painting #${paintingId}.`);
   elements.uploadFile.value = "";
-  updateUploadPreview();
-  renderAll();
+  elements.uploadPreviewImg.hidden = true;
+  elements.uploadPreviewText.textContent = "Select an image and painting slot to preview.";
+  setUploadStatus("Upload selection cleared.");
 };
 
 const uploadPaintingImage = async (event) => {
@@ -616,20 +555,40 @@ const uploadPaintingImage = async (event) => {
 
   try {
     const dataUrl = String(await readFileAsDataUrl(file));
-    customUploads.set(paintingId, {
-      dataUrl,
-      fileName: file.name,
-      type: file.type,
-      updatedAt: new Date().toISOString()
+    const match = dataUrl.match(/^data:(.+);base64,(.+)$/);
+
+    if (!match) {
+      throw new Error("Invalid file data.");
+    }
+
+    const contentType = match[1];
+    const base64Data = match[2];
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        paintingId,
+        fileName: file.name,
+        contentType,
+        base64Data
+      })
     });
-    persistCustomUploads();
-    setUploadStatus(`Uploaded ${file.name} for painting #${paintingId}.`);
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(error || "Upload failed on server.");
+    }
+
+    setUploadStatus(`Uploaded ${file.name} for painting #${paintingId}. Refresh after deploy to view.`);
     elements.uploadFile.value = "";
     updateUploadPreview();
     renderAll();
   } catch (error) {
     console.error(error);
-    setUploadStatus("Upload failed. Try a smaller image or a different file.", true);
+    setUploadStatus("Server upload failed. Verify Vercel GitHub configuration.", true);
   }
 };
 
@@ -1126,7 +1085,6 @@ window.addEventListener("keydown", (event) => {
 
 initTheme();
 setAuthButtonsDisabled(true);
-loadCustomUploads();
 renderAll();
 setAuthMessage("Initializing authentication...");
 setAuthStatus("init", "Auth Status: Initializing");
