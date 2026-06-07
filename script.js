@@ -1,5 +1,6 @@
 const STORAGE_PREFIX = "ved.art.v4";
 const THEME_KEY = `${STORAGE_PREFIX}.theme`;
+const UPLOADS_KEY = `${STORAGE_PREFIX}.uploads`;
 
 const SOCIAL_CONFIG = {
   firebase: {
@@ -176,7 +177,14 @@ const elements = {
   modalDescription: document.getElementById("modal-description"),
   modalFavBtn: document.getElementById("modal-fav-btn"),
   modalCartBtn: document.getElementById("modal-cart-btn"),
-  modalBuyBtn: document.getElementById("modal-buy-btn")
+  modalBuyBtn: document.getElementById("modal-buy-btn"),
+  uploadForm: document.getElementById("cms-upload-form"),
+  uploadPaintingId: document.getElementById("upload-painting-id"),
+  uploadFile: document.getElementById("upload-file"),
+  uploadPreviewImg: document.getElementById("upload-preview-img"),
+  uploadPreviewText: document.getElementById("upload-preview-text"),
+  uploadStatus: document.getElementById("upload-status"),
+  uploadClearBtn: document.getElementById("upload-clear-btn")
 };
 
 const state = {
@@ -209,6 +217,42 @@ const formatCurrency = (amount) =>
     currency: "INR",
     maximumFractionDigits: 0
   }).format(amount);
+
+const customUploads = new Map();
+
+const loadCustomUploads = () => {
+  const saved = parseJson(localStorage.getItem(UPLOADS_KEY), {});
+  customUploads.clear();
+
+  if (saved && typeof saved === "object") {
+    for (const entry of Object.entries(saved)) {
+      const id = Number(entry[0]);
+      const payload = entry[1];
+      if (!Number.isFinite(id) || !payload || typeof payload.dataUrl !== "string") {
+        continue;
+      }
+      customUploads.set(id, {
+        dataUrl: payload.dataUrl,
+        fileName: payload.fileName || "",
+        type: payload.type || "",
+        updatedAt: payload.updatedAt || new Date().toISOString()
+      });
+    }
+  }
+};
+
+const persistCustomUploads = () => {
+  const payload = {};
+  for (const [id, upload] of customUploads.entries()) {
+    payload[id] = {
+      dataUrl: upload.dataUrl,
+      fileName: upload.fileName,
+      type: upload.type,
+      updatedAt: upload.updatedAt
+    };
+  }
+  localStorage.setItem(UPLOADS_KEY, JSON.stringify(payload));
+};
 
 const getPainting = (id) => paintings.find((painting) => painting.id === id);
 const isProviderEnabled = (providerName) => Boolean((SOCIAL_CONFIG.providers || {})[providerName]);
@@ -394,10 +438,15 @@ const getVisiblePaintings = () =>
     return true;
   });
 
+const getPaintingImageSource = (painting) => {
+  const upload = customUploads.get(painting.id);
+  return upload?.dataUrl || painting.file;
+};
+
 const createFeaturedCard = (painting) => `
   <article class="featured-card" data-open-id="${painting.id}" role="button" tabindex="0" aria-label="Open details for ${painting.title}">
     <div class="featured-thumb" data-missing="false">
-      <img src="${painting.file}" alt="${painting.title} by Ved Sumeet Bub" loading="lazy" data-art-image="true" />
+      <img src="${getPaintingImageSource(painting)}" alt="${painting.title} by Ved Sumeet Bub" loading="lazy" data-art-image="true" />
       <div class="featured-overlay">
         <span class="tag">Featured</span>
         <h3>${painting.title}</h3>
@@ -417,7 +466,7 @@ const createGalleryCard = (painting) => {
       <div class="gallery-image" data-missing="false">
         ${boughtQty > 0 ? `<span class="status-chip">Bought x${boughtQty}</span>` : ""}
         <span class="card-number">#${painting.id}</span>
-        <img src="${painting.file}" alt="${painting.title} by Ved Sumeet Bub" loading="lazy" data-art-image="true" />
+        <img src="${getPaintingImageSource(painting)}" alt="${painting.title} by Ved Sumeet Bub" loading="lazy" data-art-image="true" />
       </div>
       <div class="gallery-copy">
         <p class="gallery-title">${painting.title}</p>
@@ -459,6 +508,129 @@ const renderFeatured = () => {
   const featured = paintings.slice(0, 3);
   elements.featuredGrid.innerHTML = featured.map(createFeaturedCard).join("");
   attachImageFallbackHandlers();
+};
+
+const renderUploadPaintingOptions = () => {
+  if (!elements.uploadPaintingId) {
+    return;
+  }
+
+  elements.uploadPaintingId.innerHTML = paintings
+    .map((painting) => `<option value="${painting.id}">#${painting.id} ${painting.title}</option>`)
+    .join("");
+
+  updateUploadPreview();
+};
+
+const readFileAsDataUrl = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Unable to read file."));
+    reader.readAsDataURL(file);
+  });
+
+const setUploadStatus = (text, isError = false) => {
+  if (!elements.uploadStatus) {
+    return;
+  }
+
+  elements.uploadStatus.textContent = text;
+  elements.uploadStatus.style.color = isError ? "#c74b4b" : "";
+};
+
+const updateUploadPreview = () => {
+  if (!elements.uploadPaintingId || !elements.uploadPreviewImg || !elements.uploadPreviewText) {
+    return;
+  }
+
+  const selectedId = Number(elements.uploadPaintingId.value);
+  const custom = customUploads.get(selectedId);
+
+  if (elements.uploadFile.files && elements.uploadFile.files.length > 0) {
+    const file = elements.uploadFile.files[0];
+    const temporaryUrl = URL.createObjectURL(file);
+    elements.uploadPreviewImg.src = temporaryUrl;
+    elements.uploadPreviewImg.hidden = false;
+    elements.uploadPreviewText.textContent = `Previewing ${file.name} for painting #${selectedId}.`;
+    return;
+  }
+
+  if (custom) {
+    elements.uploadPreviewImg.src = custom.dataUrl;
+    elements.uploadPreviewImg.hidden = false;
+    elements.uploadPreviewText.textContent = `Custom image currently stored for painting #${selectedId}.`;
+    return;
+  }
+
+  elements.uploadPreviewImg.hidden = true;
+  elements.uploadPreviewText.textContent = "Select an image and painting slot to preview.";
+};
+
+const clearUploadForSelectedPainting = () => {
+  if (!elements.uploadPaintingId) {
+    return;
+  }
+
+  const paintingId = Number(elements.uploadPaintingId.value);
+  if (!validPaintingIds.has(paintingId)) {
+    setUploadStatus("Select a valid painting slot before clearing.", true);
+    return;
+  }
+
+  if (!customUploads.has(paintingId)) {
+    setUploadStatus(`No custom image is stored for painting #${paintingId}.`);
+    return;
+  }
+
+  customUploads.delete(paintingId);
+  persistCustomUploads();
+  setUploadStatus(`Custom image removed for painting #${paintingId}.`);
+  elements.uploadFile.value = "";
+  updateUploadPreview();
+  renderAll();
+};
+
+const uploadPaintingImage = async (event) => {
+  event.preventDefault();
+  if (!elements.uploadPaintingId || !elements.uploadFile) {
+    return;
+  }
+
+  const paintingId = Number(elements.uploadPaintingId.value);
+  if (!validPaintingIds.has(paintingId)) {
+    setUploadStatus("Please choose a valid painting slot.", true);
+    return;
+  }
+
+  const file = elements.uploadFile.files?.[0];
+  if (!file) {
+    setUploadStatus("Select an image file to upload.", true);
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    setUploadStatus("Only PNG and JPEG image files are supported.", true);
+    return;
+  }
+
+  try {
+    const dataUrl = String(await readFileAsDataUrl(file));
+    customUploads.set(paintingId, {
+      dataUrl,
+      fileName: file.name,
+      type: file.type,
+      updatedAt: new Date().toISOString()
+    });
+    persistCustomUploads();
+    setUploadStatus(`Uploaded ${file.name} for painting #${paintingId}.`);
+    elements.uploadFile.value = "";
+    updateUploadPreview();
+    renderAll();
+  } catch (error) {
+    console.error(error);
+    setUploadStatus("Upload failed. Try a smaller image or a different file.", true);
+  }
 };
 
 const renderGallery = () => {
@@ -583,7 +755,7 @@ const renderModal = () => {
   elements.modalMeta.textContent = `${painting.medium} - ${painting.year} - ${painting.mood}`;
   elements.modalDescription.textContent = painting.description;
   elements.modalImageFallback.hidden = true;
-  elements.modalImage.src = painting.file;
+  elements.modalImage.src = getPaintingImageSource(painting);
   elements.modalImage.alt = `${painting.title} by Ved Sumeet Bub`;
   elements.modalFavBtn.textContent = favActive ? "Favourited" : "Favourite";
   elements.modalFavBtn.classList.toggle("active", favActive);
@@ -604,6 +776,7 @@ const renderAll = () => {
   renderGallery();
   renderCart();
   renderSavedPanel();
+  renderUploadPaintingOptions();
   renderModal();
   elements.year.textContent = new Date().getFullYear();
 };
@@ -890,6 +1063,16 @@ elements.themeToggle.addEventListener("click", () => {
   applyTheme(currentTheme === "night" ? "day" : "night");
 });
 
+elements.uploadPaintingId?.addEventListener("change", updateUploadPreview);
+
+elements.uploadFile?.addEventListener("change", () => {
+  updateUploadPreview();
+});
+
+elements.uploadForm?.addEventListener("submit", uploadPaintingImage);
+
+elements.uploadClearBtn?.addEventListener("click", clearUploadForSelectedPainting);
+
 elements.signoutBtn.addEventListener("click", async () => {
   if (firebaseAuth && state.currentUser.provider !== "guest") {
     await firebaseAuth.signOut();
@@ -943,6 +1126,7 @@ window.addEventListener("keydown", (event) => {
 
 initTheme();
 setAuthButtonsDisabled(true);
+loadCustomUploads();
 renderAll();
 setAuthMessage("Initializing authentication...");
 setAuthStatus("init", "Auth Status: Initializing");

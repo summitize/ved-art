@@ -266,6 +266,71 @@ body[data-theme="night"] .checkout-btn { color: #1a1d2d; }
   margin-top: 26px; margin-bottom: 26px; text-align: center; border-top: 1px solid var(--line); padding-top: 12px; color: var(--muted); font-size: 0.82rem;
 }
 
+.cms-section {
+  padding: 24px 0 10px;
+}
+
+.cms-card {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+  padding: 22px;
+}
+
+.upload-form {
+  display: grid;
+  gap: 14px;
+}
+
+.upload-form label {
+  display: block;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.upload-form select,
+.upload-form input[type="file"] {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: var(--surface-strong);
+}
+
+.upload-preview {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+  background: var(--surface-strong);
+}
+
+.upload-preview img {
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  border-radius: 16px;
+}
+
+.upload-actions {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.checkout-btn.secondary {
+  background: transparent;
+  border-color: var(--line);
+}
+
+.upload-note {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
 .painting-modal {
   position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 18px;
 }
