@@ -17,5 +17,8 @@ Place painting images in this folder using these names:
 - `page_13.jpg`
 - `page_14.jpg`
 - `page_15.jpg`
+- `page_16.jpg`
+- `page_17.jpg`
+- `page_18.jpg`
 
 PNG images can also be used if you update `script.js` paths.

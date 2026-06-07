@@ -1,5 +1,3 @@
-const DELIVERY_CHARGE = 1200;
-
 const STORAGE_PREFIX = "ved.art.v4";
 const THEME_KEY = `${STORAGE_PREFIX}.theme`;
 
@@ -39,92 +37,92 @@ const paintingSeed = [
   {
     title: "Sapphire Current",
     mood: "Vibrant Flow",
-    description: "A sweeping dance of sapphire and gold, capturing the ephemeral moment when light bends through moving water.",
-    price: 18500
+    description: "A sweeping dance of sapphire and gold, capturing the ephemeral moment when light bends through moving water."
   },
   {
     title: "Azure Whisper",
     mood: "Calm Pulse",
-    description: "Delicate ripples of azure and silver whisper stories of ancient currents, inviting the viewer into a state of deep reflection.",
-    price: 12000
+    description: "Delicate ripples of azure and silver whisper stories of ancient currents, inviting the viewer into a state of deep reflection."
   },
   {
     title: "Morning Pulse",
     mood: "Fresh Light",
-    description: "The first light of day breaks across the canvas in rhythmic pulses of amber and pearl, signaling a new beginning.",
-    price: 15500
+    description: "The first light of day breaks across the canvas in rhythmic pulses of amber and pearl, signaling a new beginning."
   },
   {
     title: "Twilight Blossom",
     mood: "Soft Energy",
-    description: "A subtle exploration of organic growth, where soft pastels emerge from the shadows like a flower opening at twilight.",
-    price: 5500
+    description: "A subtle exploration of organic growth, where soft pastels emerge from the shadows like a flower opening at twilight."
   },
   {
     title: "Stillness in Ochre",
     mood: "Warm Glow",
-    description: "Rich metallic textures collide with sun-drenched ochre, freezing a single moment of absolute stillness in time.",
-    price: 22000
+    description: "Rich metallic textures collide with sun-drenched ochre, freezing a single moment of absolute stillness in time."
   },
   {
     title: "Midnight Metro",
     mood: "Urban Melody",
-    description: "The chaotic energy of a midnight metropolis is transformed into a melodic arrangement of geometric shapes and neon flashes.",
-    price: 9500
+    description: "The chaotic energy of a midnight metropolis is transformed into a melodic arrangement of geometric shapes and neon flashes."
   },
   {
     title: "Monsoon Reverie",
     mood: "Rain Memory",
-    description: "Deep indigo washes and sharp white highlights recreate the sensory experience of a sudden tropical downpour.",
-    price: 14000
+    description: "Deep indigo washes and sharp white highlights recreate the sensory experience of a sudden tropical downpour."
   },
   {
     title: "Edge of Infinity",
     mood: "Open Sky",
-    description: "A fearless journey into the unknown, defined by a sharp, uncompromising line that separates the earth from the infinite sky.",
-    price: 25000
+    description: "A fearless journey into the unknown, defined by a sharp, uncompromising line that separates the earth from the infinite sky."
   },
   {
     title: "Shattered Radiance",
     mood: "Radiant Layer",
-    description: "Scattered rays of light are caught in a kaleidoscope of warm tones, representing the fractured nature of memory.",
-    price: 11500
+    description: "Scattered rays of light are caught in a kaleidoscope of warm tones, representing the fractured nature of memory."
   },
   {
     title: "Tactile Moment",
     mood: "Raw Detail",
-    description: "A visceral, high-relief composition where the physical presence of the paint speaks louder than the colors themselves.",
-    price: 8000
+    description: "A visceral, high-relief composition where the physical presence of the paint speaks louder than the colors themselves."
   },
   {
     title: "Urban Haze",
     mood: "Electric Calm",
-    description: "Towering structures dissolve into a haze of atmospheric grays and blues, questioning the permanence of the urban landscape.",
-    price: 19500
+    description: "Towering structures dissolve into a haze of atmospheric grays and blues, questioning the permanence of the urban landscape."
   },
   {
     title: "Nostalgic Garden",
     mood: "Floral Pulse",
-    description: "A nostalgic tapestry of vibrant wildflowers, painted with the raw honesty and uninhibited joy of a child's imagination.",
-    price: 13500
+    description: "A nostalgic tapestry of vibrant wildflowers, painted with the raw honesty and uninhibited joy of a child's imagination."
   },
   {
     title: "Lone Lantern",
     mood: "Night Glow",
-    description: "A singular point of warmth pierces through a vast, velvety darkness, symbolizing hope in the midst of solitude.",
-    price: 7500
+    description: "A singular point of warmth pierces through a vast, velvety darkness, symbolizing hope in the midst of solitude."
   },
   {
     title: "Tidal Exhale",
     mood: "Tidal Drift",
-    description: "Colossal swells of turquoise and foam heave with a rhythmic intensity that mirrors the life force of the sea.",
-    price: 21000
+    description: "Colossal swells of turquoise and foam heave with a rhythmic intensity that mirrors the life force of the sea."
   },
   {
     title: "Scarlet Orbit",
     mood: "Fiery Motion",
-    description: "A celestial explosion of fiery reds and deep blacks, mapping the trajectory of an unspoken passion through the void.",
-    price: 17000
+    description: "A celestial explosion of fiery reds and deep blacks, mapping the trajectory of an unspoken passion through the void."
+  },
+  {
+    title: "Cerulean Tonight",
+    mood: "Nocturnal Calm",
+    description: "A quiet blue twilight scene that blends gentle light and shadow into an emotional evening composition."
+  },
+  {
+    title: "Golden Drift",
+    mood: "Warm Motion",
+    description: "A hazy rush of golden ochre and amber, evoking the slow warmth of sunlight drifting across a textured landscape."
+  },
+  {
+    title: "Prismatic Arc",
+    mood: "Joyful Bloom",
+    description: "A bold arc of vivid color sweeps across the canvas, capturing the energy of light and emotion colliding in motion."
   }
 ];
 
@@ -135,8 +133,7 @@ const paintings = paintingSeed.map((painting, index) => ({
   description: painting.description,
   medium: mediumCycle[index % mediumCycle.length],
   year: index % 2 === 0 ? "2025" : "2024",
-  file: `arts/page_${index + 1}.jpg`,
-  price: painting.price
+  file: `arts/page_${index + 1}.jpg`
 }));
 
 const validPaintingIds = new Set(paintings.map((painting) => painting.id));
@@ -433,7 +430,7 @@ const createGalleryCard = (painting) => {
             ${cartQty > 0 ? `Cart (${cartQty})` : "Add Cart"}
           </button>
           <button class="action-btn buy" type="button" data-action="quick-buy" data-id="${painting.id}">
-            Buy Now
+            Save Now
           </button>
         </div>
       </div>
@@ -488,16 +485,11 @@ const renderGallery = () => {
 
 const renderCart = () => {
   const entries = [...state.cart.entries()];
-  const subtotal = entries.reduce((sum, [id, qty]) => {
-    const painting = getPainting(id);
-    return sum + (painting ? painting.price * qty : 0);
-  }, 0);
-  const delivery = subtotal > 0 ? DELIVERY_CHARGE : 0;
-  const total = subtotal + delivery;
+  const totalSelected = entries.reduce((sum, [, qty]) => sum + qty, 0);
 
-  elements.cartSubtotal.textContent = formatCurrency(subtotal);
-  elements.cartDelivery.textContent = formatCurrency(delivery);
-  elements.cartTotal.textContent = formatCurrency(total);
+  elements.cartSubtotal.textContent = `${totalSelected} ${totalSelected === 1 ? "painting" : "paintings"} selected`;
+  elements.cartDelivery.textContent = entries.length > 0 ? "Ready to save" : "No items selected";
+  elements.cartTotal.textContent = `${totalSelected} ${totalSelected === 1 ? "item" : "items"}`;
   elements.checkoutBtn.disabled = entries.length === 0;
 
   if (entries.length === 0) {
@@ -519,9 +511,8 @@ const renderCart = () => {
           <div class="cart-head">
             <div>
               <p class="cart-name">${painting.title}</p>
-              <p class="cart-price">${formatCurrency(painting.price)} each</p>
+              <p class="cart-price">Qty ${qty}</p>
             </div>
-            <strong>${formatCurrency(painting.price * qty)}</strong>
           </div>
           <div class="cart-controls">
             <button class="qty-btn" type="button" data-cart-action="decrease" data-id="${id}">-</button>
@@ -891,7 +882,7 @@ elements.checkoutBtn.addEventListener("click", () => {
   state.cart.clear();
   persistCurrentProfile();
   renderAll();
-  window.alert("Purchase recorded and saved to your profile.");
+  window.alert("Selection recorded and saved to your profile.");
 });
 
 elements.themeToggle.addEventListener("click", () => {

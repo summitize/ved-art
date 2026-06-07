@@ -150,7 +150,6 @@ body[data-theme="night"] .hero-section { background: linear-gradient(135deg, #24
 }
 .stat-pill strong { display: block; font-size: 1.2rem; font-family: "Fraunces", serif; }
 .stat-pill span { font-size: 0.76rem; letter-spacing: 0.04em; }
-.price-note { margin: 17px auto 0; max-width: 780px; font-size: 0.78rem; line-height: 1.5; color: rgba(255, 255, 255, 0.82); }
 .hero-wave { display: block; width: 100%; }
 .hero-wave path { fill: var(--bg); }
 
